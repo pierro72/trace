@@ -1,0 +1,21 @@
+package com.ex.demo.carte.service.mapper.complet;
+
+import com.ex.demo.carte.domaine.Ville;
+import com.ex.demo.carte.service.dto.VilleDTO;
+import com.ex.demo.util.EntityMapper;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+/**
+ * Mapper pour l' entity Ville et son DTO VilleDTO.
+ */
+@Mapper(componentModel = "spring", uses = {})
+public interface VilleMapper extends EntityMapper<VilleDTO, Ville> {
+
+
+    VilleDTO toDto(Ville ville);
+
+
+    Ville toEntity(VilleDTO villeDTO);
+
+}

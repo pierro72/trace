@@ -1,0 +1,21 @@
+package com.ex.demo.carte.service.mapper.complet;
+
+import com.ex.demo.carte.domaine.Attribut;
+import com.ex.demo.carte.service.dto.AttributDTO;
+import com.ex.demo.util.EntityMapper;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+/**
+ * Mapper pour l' entity Attribut et son DTO AttributDTO.
+ */
+@Mapper(componentModel = "spring", uses = {})
+public interface AttributMapper extends EntityMapper<AttributDTO, Attribut> {
+
+
+    AttributDTO toDto(Attribut attribut);
+
+
+    Attribut toEntity(AttributDTO attributDTO);
+
+}

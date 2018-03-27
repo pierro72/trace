@@ -1,0 +1,24 @@
+package com.ex.demo.carte.domaine;
+
+import com.ex.demo.carte.RessourceType;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+@Entity
+public class Ressource extends Attribut{
+
+
+    @NotNull
+    private RessourceType ressourceType;
+
+
+    public RessourceType getRessourceType() {
+        return ressourceType;
+    }
+
+    public void setRessourceType(RessourceType ressourceType) {
+        this.ressourceType = ressourceType;
+    }
+
+
+}

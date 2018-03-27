@@ -1,0 +1,114 @@
+package com.ex.demo.carte.controller;
+
+import com.ex.demo.carte.service.RessourceService;
+import com.ex.demo.carte.service.dto.RessourceDTO;
+import com.ex.demo.util.HeaderUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
+
+/**
+ * REST controller for managing Ressource.
+ */
+@RestController
+@RequestMapping("/api")
+public class RessourceController {
+
+    private final Logger log = LoggerFactory.getLogger(RessourceController.class);
+
+    private static final String ENTITY_NAME = "ressource";
+
+    private final RessourceService ressourceService;
+
+    public RessourceController(RessourceService ressourceService) {
+        this.ressourceService = ressourceService;
+    }
+
+
+    /**
+     * POST  /ressource : Creer une nouvelle ressource
+     *
+     * @param ressourceDTO : ressource a créer
+     * @return  ResponseEntity avec status 201 (Creér) et avec le ressource dans le body, ou status 400 (Bad Request) si le ressource a déja un ID
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/ressource")
+    public ResponseEntity<RessourceDTO> createRessource(@Valid @RequestBody RessourceDTO ressourceDTO) throws URISyntaxException {
+        log.debug("requete REST pour sauvegarder Ressource : {}", ressourceDTO);
+        RessourceDTO result = ressourceService.save(ressourceDTO);
+
+        return ResponseEntity.created(
+                new URI("/api/ressource/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
+
+    /**
+     * PUT  /ressource : Updates an existing ressource.
+     *
+     * @param ressourceDTO the ressourceDTO à metre à jours
+     * @return ResponseEntity avec status 200 (OK) et avec le ressourceDTO mise à jours
+     * or with status 400 (Bad Request) if the ressourceDTO n'est pas valide,
+     * or with status 500 (Internal Server Error) if the ressourceDTO ne peux etre mise à jours
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PutMapping("/ressource")
+    public ResponseEntity<RessourceDTO>       updateRessource(@Valid @RequestBody RessourceDTO ressourceDTO) throws URISyntaxException {
+        log.debug("requete REST to update Ressource : {}", ressourceDTO);
+        if (ressourceDTO.getId() == null) {
+            return createRessource(ressourceDTO);
+        }
+        RessourceDTO result = ressourceService.save(ressourceDTO);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, ressourceDTO.getId().toString()))
+                .body(result);
+    }
+
+    /**
+     * GET  /ressource : get all the ressource.
+     *
+     * @return ResponseEntity avec status 200 (OK) et la liste des ressource dans le body
+     */
+    @GetMapping("/ressource")
+    public List<RessourceDTO> getAllRessource(@RequestParam(value = "search", required = false ) String criteria ) {
+        log.debug("requete REST pour obtenir une liste de Ressource avec criteria: {}", criteria);
+        return ressourceService.findAll(criteria);
+    }
+
+    /**
+     * GET  /ressource/:id : get the "id" ressource.
+     *
+     * @param id l'id du ressource à retourner
+     * @return  ResponseEntity avec status 200 (OK) et avec le ressource dans le body, ou status 404 (Not Found)
+     */
+
+    @GetMapping("/ressource/{id}")
+    public ResponseEntity<RessourceDTO> getRessource(@PathVariable Long id) {
+        log.debug("requete REST to get Ressource : {}", id);
+        RessourceDTO ressourceDTO = ressourceService.findOne(id);
+        return new ResponseEntity<>(ressourceDTO, HttpStatus.FOUND);
+    }
+
+
+    /**
+     * DELETE  /ressource/:id : supprime le ressource avec cette "id".
+     *
+     * @param id l'id du  ressource à supprimer
+     * @return ResponseEntity avec status 200 (OK)
+     */
+    @DeleteMapping("/ressource/{id}")
+    public ResponseEntity<Void> deleteRessource(@PathVariable Long id) {
+        log.debug("requete REST to delete Ressource : {}", id);
+        ressourceService.delete(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+}

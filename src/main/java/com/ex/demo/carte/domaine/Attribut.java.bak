@@ -1,0 +1,20 @@
+package com.ex.demo.carte.domaine;
+
+
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+public abstract class Attribut {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Tuile tuile;
+
+}
