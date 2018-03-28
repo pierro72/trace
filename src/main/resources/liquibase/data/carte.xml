@@ -1,0 +1,79 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet author="pyc" id="carte-demo">
+        <comment>insert queries</comment>
+        <sql dbms="mysql"
+             splitStatements="true"
+             stripComments="true">
+            INSERT INTO `carte` (`id`, `description`, `nom`) VALUES (NULL, 'carte demo 5*5', 'carte_1');
+
+        </sql>
+    </changeSet>
+
+    <changeSet author="pyc" id="region-demo">
+        <comment>insert queries</comment>
+        <sql dbms="mysql"
+             splitStatements="true"
+             stripComments="true">
+
+            set @carte = (SELECT MAX(ID) from carte);
+
+            INSERT INTO `tuile_groupe` (`id`, `nom`, `carte_id`) VALUES (NULL, 'region_1', @carte );
+
+            set @groupe_1 = (SELECT MAX(ID) from tuile_groupe);
+            INSERT INTO `tuile` (`id`, `capitale`, `limite`, `positionx`, `positiony`, `ressource_type`, `tuile_type`, `tuile_groupe_id`) VALUES
+            (NULL, b'1', b'0', '0', '0', '0', '1', @groupe_1),
+            (NULL, b'0', b'0', '0', '1', '1', '1', @groupe_1),
+            (NULL, b'0', b'0', '0', '2', '2', '1', @groupe_1),
+            (NULL, b'0', b'0', '0', '3', '3', '1', @groupe_1),
+            (NULL, b'0', b'0', '0', '4', '4', '1', @groupe_1);
+
+            INSERT INTO `tuile_groupe` (`id`, `nom`, `carte_id`) VALUES (NULL, 'region_2', @carte );
+
+            set @groupe_2 = (SELECT MAX(ID) from tuile_groupe);
+            INSERT INTO `tuile` (`id`, `capitale`, `limite`, `positionx`, `positiony`, `ressource_type`, `tuile_type`, `tuile_groupe_id`) VALUES
+            (NULL, b'0', b'0', '1', '0', '0', '1', @groupe_2),
+            (NULL, b'0', b'0', '1', '1', '1', '1', @groupe_2),
+            (NULL, b'0', b'0', '1', '2', '2', '1', @groupe_2),
+            (NULL, b'1', b'0', '1', '3', '3', '1', @groupe_2),
+            (NULL, b'0', b'0', '1', '4', '4', '1', @groupe_2);
+
+            INSERT INTO `tuile_groupe` (`id`, `nom`, `carte_id`) VALUES (NULL, 'region_3', @carte );
+
+            set @groupe_3 = (SELECT MAX(ID) from tuile_groupe);
+            INSERT INTO `tuile` (`id`, `capitale`, `limite`, `positionx`, `positiony`, `ressource_type`, `tuile_type`, `tuile_groupe_id`) VALUES
+            (NULL, b'0', b'0', '2', '0', '0', '1', @groupe_3),
+            (NULL, b'1', b'0', '2', '1', '1', '1', @groupe_3),
+            (NULL, b'0', b'0', '2', '2', '2', '1', @groupe_3),
+            (NULL, b'0', b'0', '2', '3', '3', '1', @groupe_3),
+            (NULL, b'0', b'0', '2', '4', '4', '1', @groupe_3);
+
+            INSERT INTO `tuile_groupe` (`id`, `nom`, `carte_id`) VALUES (NULL, 'region_4', @carte );
+
+            set @groupe_4 = (SELECT MAX(ID) from tuile_groupe);
+            INSERT INTO `tuile` (`id`, `capitale`, `limite`, `positionx`, `positiony`, `ressource_type`, `tuile_type`, `tuile_groupe_id`) VALUES
+            (NULL, b'0', b'0', '3', '0', '0', '1', @groupe_4),
+            (NULL, b'0', b'0', '3', '1', '1', '1', @groupe_4),
+            (NULL, b'0', b'0', '3', '2', '2', '1', @groupe_4),
+            (NULL, b'0', b'0', '3', '3', '3', '1', @groupe_4),
+            (NULL, b'1', b'0', '3', '4', '4', '1', @groupe_4);
+
+            INSERT INTO `tuile_groupe` (`id`, `nom`, `carte_id`) VALUES (NULL, 'region_5', @carte );
+
+            set @groupe_5 = (SELECT MAX(ID) from tuile_groupe);
+            INSERT INTO `tuile` (`id`, `capitale`, `limite`, `positionx`, `positiony`, `ressource_type`, `tuile_type`, `tuile_groupe_id`) VALUES
+            (NULL, b'0', b'0', '4', '0', '0', '1', @groupe_5),
+            (NULL, b'0', b'0', '4', '1', '1', '1', @groupe_5),
+            (NULL, b'1', b'0', '4', '2', '2', '1', @groupe_5),
+            (NULL, b'0', b'0', '4', '3', '3', '1', @groupe_5),
+            (NULL, b'0', b'0', '4', '4', '4', '1', @groupe_5);
+
+        </sql>
+    </changeSet>
+
+
+
+</databaseChangeLog>
+
