@@ -4,11 +4,10 @@
 
     <changeSet author="pyc" id="trace-demo">
         <comment>insert queries</comment>
-        <sql dbms="mysql"
+        <sql dbms="postgresql"
              splitStatements="true"
              stripComments="true">
-            INSERT INTO `trace` (id, contenu, positionX, positionY, trace_type) VALUES (NULL, 'salut', '0', '0', '0');
-
+            INSERT INTO trace (id, contenu, positionX, positionY, trace_type) VALUES ('2', 'salut', '0', '0', '0');
         </sql>
     </changeSet>
 

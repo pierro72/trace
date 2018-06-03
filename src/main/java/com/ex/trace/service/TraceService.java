@@ -1,12 +1,12 @@
-package com.py.trace.service;
+package com.ex.trace.service;
 
-import com.py.trace.domaine.Trace;
-import com.py.trace.repository.TraceRepository;
-import com.py.trace.service.dto.TraceDTO;
-import com.py.trace.service.mapper.complet.TraceMapperComplet;
-import com.py.trace.service.mapper.simple.TraceMapper;
-import com.py.trace.specification.TraceSpecification;
-import com.py.trace.util.SearchCriteria;
+import com.ex.trace.domaine.Trace;
+import com.ex.trace.repository.TraceRepository;
+import com.ex.trace.service.dto.TraceDTO;
+import com.ex.trace.service.mapper.TraceMapperComplet;
+import com.ex.trace.service.mapper.TraceMapper;
+import com.ex.trace.specification.TraceSpecification;
+import com.ex.trace.util.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,9 +49,10 @@ public class TraceService {
      */
     public TraceDTO save(TraceDTO traceDTO) {
         log.debug("Request pour sauvegarder Trace : {}", traceDTO);
-        Trace trace = traceMapper.toEntity(traceDTO);
+        Trace trace = traceMapperComplet.toEntity(traceDTO);
+        trace.setDate(Calendar.getInstance().getTime());
         trace = traceRepository.save(trace);
-        return traceMapper.toDto(trace);
+        return traceMapperComplet.toDto(trace);
     }
 
     /**
@@ -59,15 +61,8 @@ public class TraceService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<TraceDTO> findAll(String search) {
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
-        Matcher matcher = pattern.matcher(search + ",");
-        List<SearchCriteria> params = new ArrayList<SearchCriteria>();
-        while (matcher.find()) {
-            params.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
-        }
-        Specification<Trace> spec = specificationBuild(params);
-        List<Trace> trace = traceRepository.findAll(spec);
+    public List<TraceDTO> findAll() {
+        List<Trace> trace = traceRepository.findAll();
         return traceMapper.toDto(trace);
     }
 

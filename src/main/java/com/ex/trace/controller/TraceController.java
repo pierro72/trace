@@ -1,9 +1,9 @@
-package com.py.trace.controller;
+package com.ex.trace.controller;
 
 
-import com.py.trace.service.TraceService;
-import com.py.trace.service.dto.TraceDTO;
-import com.py.trace.util.HeaderUtil;
+import com.ex.trace.service.TraceService;
+import com.ex.trace.service.dto.TraceDTO;
+import com.ex.trace.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,6 @@ public class TraceController {
         this.traceService = traceService;
     }
 
-
     /**
      * POST  /trace : Creer un nouveau trace
      *
@@ -53,35 +52,14 @@ public class TraceController {
     }
 
     /**
-     * PUT  /trace : Updates an existing traceGroupe.
-     *
-     * @param traceDTO the traceGroupeDTO à metre à jours
-     * @return ResponseEntity avec status 200 (OK) et avech le traceGroupeDTO mise à jours
-     * or with status 400 (Bad Request) if the traceGroupeDTO n'est pas valide,
-     * or with status 500 (Internal Server Error) if the traceGroupeDTO ne peux etre mise à jours
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PutMapping("/trace")
-    public ResponseEntity<TraceDTO>       updateTraceGroupe(@Valid @RequestBody TraceDTO traceDTO) throws URISyntaxException {
-        log.debug("requete REST to update TraceGroupe : {}", traceDTO);
-        if (traceDTO.getId() == null) {
-            return createTrace(traceDTO);
-        }
-        TraceDTO result = traceService.save(traceDTO);
-        return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, traceDTO.getId().toString()))
-                .body(result);
-    }
-
-    /**
      * GET  /trace : get all the trace.
      *
      * @return ResponseEntity avec status 200 (OK) et la liste des trace dans le body
      */
     @GetMapping("/trace")
-    public List<TraceDTO> getAllTrace(@RequestParam(value = "search", required = false ) String criteria ) {
-        log.debug("requete REST pour obtenir une liste de Trace avec criteria: {}", criteria);
-        return traceService.findAll(criteria);
+    public List<TraceDTO> getAllTrace(@RequestParam Integer positionX, Integer positionY ) {
+        log.debug("requete REST pour obtenir une liste de Trace");
+        return traceService.findAll();
     }
 
     /**
@@ -99,17 +77,5 @@ public class TraceController {
     }
 
 
-    /**
-     * DELETE  /trace/:id : supprime le trace avec cette "id".
-     *
-     * @param id l'id du  trace à supprimer
-     * @return ResponseEntity avec status 200 (OK)
-     */
-    @DeleteMapping("/trace/{id}")
-    public ResponseEntity<Void> deleteTrace(@PathVariable Long id) {
-        log.debug("requete REST to delete Trace : {}", id);
-        traceService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
-    }
 
 }

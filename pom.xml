@@ -22,6 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<postgreSQL.version>9.1-901-1.jdbc4</postgreSQL.version>
 		<org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
 	</properties>
 
@@ -56,22 +57,22 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!--MYSQL-->
+		<!--postgresSQL-->
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgreSQL.version}</version>
 		</dependency>
+
+
+		<!--MYSQL-->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.44</version>
 		</dependency>
 
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>

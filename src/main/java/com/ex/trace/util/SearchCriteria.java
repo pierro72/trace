@@ -1,4 +1,4 @@
-package com.py.trace.util;
+package com.ex.trace.util;
 
 public class SearchCriteria {
     private String key;

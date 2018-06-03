@@ -1,6 +1,7 @@
-package com.py.trace.service.dto;
-import com.py.trace.TraceType;
-
+package com.ex.trace.service.dto;
+import com.ex.trace.TraceType;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TraceDTO {
 
@@ -13,6 +14,8 @@ public class TraceDTO {
     private Integer positionY;
 
     private TraceType traceType;
+
+    private Set<CommentaireDTO> commentaires = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -52,5 +55,13 @@ public class TraceDTO {
 
     public void setTraceType(TraceType traceType) {
         this.traceType = traceType;
+    }
+
+    public Set<CommentaireDTO> getCommentaires() {
+        return commentaires;
+    }
+
+    public void setCommentaires(Set<CommentaireDTO> commentaires) {
+        this.commentaires = commentaires;
     }
 }

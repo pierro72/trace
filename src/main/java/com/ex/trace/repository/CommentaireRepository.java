@@ -1,7 +1,7 @@
 package com.ex.trace.repository;
 
 
-import com.ex.trace.domaine.Trace;
+import com.ex.trace.domaine.Commentaire;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface TraceRepository extends JpaRepository<Trace, Long>, JpaSpecificationExecutor<Trace> {
+public interface CommentaireRepository extends JpaRepository<Commentaire, Long>, JpaSpecificationExecutor<Commentaire> {
 
-    Trace findById(Long id);
+    Commentaire findById(Long id);
 }

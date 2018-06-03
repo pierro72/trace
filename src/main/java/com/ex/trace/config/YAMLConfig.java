@@ -1,4 +1,4 @@
-package com.py.trace.config;
+package com.ex.trace.config;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

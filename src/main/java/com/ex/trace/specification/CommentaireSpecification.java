@@ -1,7 +1,7 @@
 package com.ex.trace.specification;
 
 
-import com.ex.trace.domaine.Trace;
+import com.ex.trace.domaine.Commentaire;
 import com.ex.trace.util.SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -11,17 +11,17 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 
-public class TraceSpecification implements Specification<Trace> {
+public class CommentaireSpecification implements Specification<Commentaire> {
 
     private SearchCriteria criteria;
 
-    public TraceSpecification(SearchCriteria criteria) {
+    public CommentaireSpecification(SearchCriteria criteria) {
         this.criteria = criteria;
     }
 
     @Override
     public Predicate toPredicate
-            (Root<Trace> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+            (Root<Commentaire> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 
         if (criteria.getOperation().equalsIgnoreCase(">")) {
             return builder.greaterThanOrEqualTo(
