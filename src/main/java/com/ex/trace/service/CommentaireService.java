@@ -1,6 +1,7 @@
 package com.ex.trace.service;
 
 import com.ex.trace.domaine.Commentaire;
+import com.ex.trace.domaine.Trace;
 import com.ex.trace.repository.CommentaireRepository;
 import com.ex.trace.service.dto.CommentaireDTO;
 import com.ex.trace.service.mapper.CommentaireMapper;
@@ -8,6 +9,7 @@ import com.ex.trace.specification.CommentaireSpecification;
 import com.ex.trace.util.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ import java.util.regex.Pattern;
 @Transactional
 public class CommentaireService {
 
+
+    private final TraceService traceService;
+
     private final Logger log = LoggerFactory.getLogger(CommentaireService.class);
 
     private final CommentaireRepository commentaireRepository;
@@ -33,9 +38,10 @@ public class CommentaireService {
     private final CommentaireMapper commentaireMapper;
 
 
-    public CommentaireService(CommentaireRepository commentaireRepository, CommentaireMapper commentaireMapper) {
+    public CommentaireService(CommentaireRepository commentaireRepository, CommentaireMapper commentaireMapper, TraceService traceService) {
         this.commentaireRepository    = commentaireRepository;
         this.commentaireMapper        = commentaireMapper;
+        this.traceService             = traceService;
     }
 
     /**
@@ -44,9 +50,14 @@ public class CommentaireService {
      * @param commentaireDTO the entity pour sauvegarder
      * @return the persisted entity
      */
-    public CommentaireDTO save(CommentaireDTO commentaireDTO) {
+    public CommentaireDTO save(CommentaireDTO commentaireDTO, double positionX, double positionY ) throws Exception {
         log.debug("Request pour sauvegarder Commentaire : {}", commentaireDTO);
         Commentaire commentaire = commentaireMapper.toEntity(commentaireDTO);
+        if (!traceService.estLisible(positionX, positionY, commentaire.getTrace() )){
+            System.out.println("trace trop loigné pour commenter"+commentaire.getTrace().getPositionX() + " "+ commentaire.getTrace().getPositionY());
+            throw new Exception("trace trop loigné pour commenter");
+        }
+        System.out.println("trace ok pour commenter");
         commentaire.setDate(Calendar.getInstance().getTime());
         commentaire = commentaireRepository.save(commentaire);
         return commentaireMapper.toDto(commentaire);

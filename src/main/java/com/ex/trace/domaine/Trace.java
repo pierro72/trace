@@ -20,10 +20,10 @@ public class Trace {
     private String contenu;
 
     @NotNull
-    private Integer positionX;
+    private double positionX;
 
     @NotNull
-    private Integer positionY;
+    private double positionY;
 
     @NotNull
     private TraceType traceType;
@@ -51,19 +51,19 @@ public class Trace {
         this.contenu = contenu;
     }
 
-    public Integer getPositionX() {
+    public double getPositionX() {
         return positionX;
     }
 
-    public void setPositionX(Integer positionX) {
+    public void setPositionX(double positionX) {
         this.positionX = positionX;
     }
 
-    public Integer getPositionY() {
+    public double getPositionY() {
         return positionY;
     }
 
-    public void setPositionY(Integer positionY) {
+    public void setPositionY(double positionY) {
         this.positionY = positionY;
     }
 

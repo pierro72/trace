@@ -7,7 +7,9 @@
         <sql dbms="postgresql"
              splitStatements="true"
              stripComments="true">
-            INSERT INTO trace (id, contenu, positionX, positionY, trace_type) VALUES ('2', 'salut', '0', '0', '0');
+            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'salut', '47.997779', '0.193635', '1');
+            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'fuck', '47.995014', '0.191129', '1');
+            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'souvenir', '47.990312', '0.146781', '1');
         </sql>
     </changeSet>
 

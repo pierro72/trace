@@ -9,6 +9,7 @@ import com.ex.trace.specification.TraceSpecification;
 import com.ex.trace.util.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,12 @@ import java.util.regex.Pattern;
 @Service
 @Transactional
 public class TraceService {
+
+    @Value( "${trace.visible}")
+    private double distanceVisible;
+
+    @Value( "${trace.lisible}")
+    private double distanceLisible;
 
     private final Logger log = LoggerFactory.getLogger(TraceService.class);
 
@@ -61,8 +68,12 @@ public class TraceService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<TraceDTO> findAll() {
-        List<Trace> trace = traceRepository.findAll();
+    public List<TraceDTO> findAll(double positionX, double positionY) {
+        double longitudeMax  = positionX + distanceVisible;
+        double longitudeMin  = positionX - distanceVisible;
+        double latitudeMax   = positionY + distanceVisible;
+        double latitudeMin   = positionY - distanceVisible;
+        List<Trace> trace = traceRepository.findProxiTrace( longitudeMax, longitudeMin, latitudeMax, latitudeMin );
         return traceMapper.toDto(trace);
     }
 
@@ -73,10 +84,18 @@ public class TraceService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public TraceDTO findOne(Long id) {
+    public Trace findOne(Long id) {
         log.debug("Request to get Trace : {}", id);
-        Trace trace = traceRepository.findOne(id);
+        return traceRepository.findOne(id);
+    }
 
+    @Transactional(readOnly = true)
+    public TraceDTO lirePoint(Long id, double positionX, double positionY ) throws Exception {
+        log.debug("Request pour obtenir la trace: {}", id);
+        Trace trace = traceRepository.findOne(id);
+        if ( !estLisible( positionX, positionY, trace) ){
+            throw new Exception("trop loin");
+        }
         return traceMapperComplet.toDto(trace);
     }
 
@@ -89,6 +108,17 @@ public class TraceService {
         log.debug("Request to delete Trace2 : {}", id);
         Trace trace = traceRepository.findOne(id);
         traceRepository.delete(trace);
+    }
+
+    public boolean estLisible(double x, double y, Trace trace  ){
+        double distance = obtenirDistance(x, y, trace.getPositionX(), trace.getPositionY());
+        log.debug("distance : "+distance);
+
+        return (distance < distanceLisible);
+    }
+
+    public double obtenirDistance(double x1, double y1, double x2, double y2){
+        return java.lang.Math.sqrt ( (x1-x2) * (x1-x2) + (y1-y2) * (y1-y2) );
     }
 
     private Specification<Trace> specificationBuild(List<SearchCriteria> params ) {

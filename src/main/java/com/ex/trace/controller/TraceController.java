@@ -57,9 +57,9 @@ public class TraceController {
      * @return ResponseEntity avec status 200 (OK) et la liste des trace dans le body
      */
     @GetMapping("/trace")
-    public List<TraceDTO> getAllTrace(@RequestParam Integer positionX, Integer positionY ) {
+    public List<TraceDTO> getAllTrace(@RequestParam double positionX, double positionY ) {
         log.debug("requete REST pour obtenir une liste de Trace");
-        return traceService.findAll();
+        return traceService.findAll(positionX, positionY);
     }
 
     /**
@@ -70,10 +70,17 @@ public class TraceController {
      */
 
     @GetMapping("/trace/{id}")
-    public ResponseEntity<TraceDTO> getTrace(@PathVariable Long id) {
+    public ResponseEntity<TraceDTO> getTrace(@PathVariable Long id, @RequestParam float positionX, float positionY ) {
         log.debug("requete REST to get Trace : {}", id);
-        TraceDTO traceDTO = traceService.findOne(id);
-        return new ResponseEntity<>(traceDTO, HttpStatus.FOUND);
+        TraceDTO traceDTO = null;
+        try {
+            traceDTO = traceService.lirePoint(id, positionX, positionY);
+            return ResponseEntity.ok(traceDTO);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(traceDTO, HttpStatus.NOT_FOUND);
+        }
+
     }
 
 

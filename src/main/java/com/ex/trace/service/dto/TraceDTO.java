@@ -9,9 +9,9 @@ public class TraceDTO {
 
     private String contenu;
 
-    private Integer positionX;
+    private double positionX;
 
-    private Integer positionY;
+    private double positionY;
 
     private TraceType traceType;
 
@@ -33,19 +33,19 @@ public class TraceDTO {
         this.contenu = contenu;
     }
 
-    public Integer getPositionX() {
+    public double getPositionX() {
         return positionX;
     }
 
-    public void setPositionX(Integer positionX) {
+    public void setPositionX(double positionX) {
         this.positionX = positionX;
     }
 
-    public Integer getPositionY() {
+    public double getPositionY() {
         return positionY;
     }
 
-    public void setPositionY(Integer positionY) {
+    public void setPositionY(double positionY) {
         this.positionY = positionY;
     }
 

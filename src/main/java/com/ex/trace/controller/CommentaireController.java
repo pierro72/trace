@@ -40,14 +40,19 @@ public class CommentaireController {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/commentaire")
-    public ResponseEntity<CommentaireDTO> createCommentaire(@Valid @RequestBody CommentaireDTO commentaireDTO) throws URISyntaxException {
+    public ResponseEntity<CommentaireDTO> createCommentaire( @Valid @RequestBody CommentaireDTO commentaireDTO, @RequestParam double positionX, double positionY) throws URISyntaxException {
         log.debug("requete REST pour sauvegarder Commentaire : {}", commentaireDTO);
-        CommentaireDTO result = commentaireService.save(commentaireDTO);
-
-        return ResponseEntity.created(
-                new URI("/api/commentaire/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
+        CommentaireDTO result = null;
+        try {
+            result = commentaireService.save(commentaireDTO, positionX, positionY);
+            return ResponseEntity.created(
+                    new URI("/api/commentaire/" + result.getId()))
+                    .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                    .body(result);
+        } catch (Exception e) {
+            e.getStackTrace();
+            return new ResponseEntity<>(commentaireDTO, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     /**
