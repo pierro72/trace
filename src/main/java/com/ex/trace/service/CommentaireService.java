@@ -1,15 +1,14 @@
 package com.ex.trace.service;
 
 import com.ex.trace.domaine.Commentaire;
+
 import com.ex.trace.domaine.Trace;
 import com.ex.trace.repository.CommentaireRepository;
-import com.ex.trace.service.dto.CommentaireDTO;
 import com.ex.trace.service.mapper.CommentaireMapper;
 import com.ex.trace.specification.CommentaireSpecification;
 import com.ex.trace.util.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
@@ -28,39 +27,41 @@ import java.util.regex.Pattern;
 @Transactional
 public class CommentaireService {
 
-
     private final TraceService traceService;
 
     private final Logger log = LoggerFactory.getLogger(CommentaireService.class);
 
     private final CommentaireRepository commentaireRepository;
 
-    private final CommentaireMapper commentaireMapper;
 
 
-    public CommentaireService(CommentaireRepository commentaireRepository, CommentaireMapper commentaireMapper, TraceService traceService) {
+
+    public CommentaireService(CommentaireRepository commentaireRepository, TraceService traceService) {
         this.commentaireRepository    = commentaireRepository;
-        this.commentaireMapper        = commentaireMapper;
         this.traceService             = traceService;
     }
 
     /**
      * Save a commentaire.
      *
-     * @param commentaireDTO the entity pour sauvegarder
+     * @param commentaire the entity pour sauvegarder
      * @return the persisted entity
      */
-    public CommentaireDTO save(CommentaireDTO commentaireDTO, double positionX, double positionY ) throws Exception {
-        log.debug("Request pour sauvegarder Commentaire : {}", commentaireDTO);
-        Commentaire commentaire = commentaireMapper.toEntity(commentaireDTO);
+    public Commentaire save(Commentaire commentaire, double positionX, double positionY ) throws Exception {
+        log.debug("Request pour sauvegarder Commentaire : {}", commentaire);
         if (!traceService.estLisible(positionX, positionY, commentaire.getTrace() )){
-            System.out.println("trace trop loigné pour commenter"+commentaire.getTrace().getPositionX() + " "+ commentaire.getTrace().getPositionY());
             throw new Exception("trace trop loigné pour commenter");
         }
-        System.out.println("trace ok pour commenter");
         commentaire.setDate(Calendar.getInstance().getTime());
         commentaire = commentaireRepository.save(commentaire);
-        return commentaireMapper.toDto(commentaire);
+        return commentaire;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Commentaire> LireCommentaireParTrace(Long idTrace, Double x, Double y) throws Exception {
+        Trace trace = traceService.afficherAProximite(idTrace, x, y);
+        List<Commentaire> commentaires = commentaireRepository.findAllByTrace(trace);
+        return commentaires;
     }
 
     /**
@@ -69,7 +70,7 @@ public class CommentaireService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<CommentaireDTO> findAll(String search) {
+    public List<Commentaire> findAll(String search) {
         Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
         Matcher matcher = pattern.matcher(search + ",");
         List<SearchCriteria> params = new ArrayList<SearchCriteria>();
@@ -78,7 +79,7 @@ public class CommentaireService {
         }
         Specification<Commentaire> spec = specificationBuild(params);
         List<Commentaire> commentaire = commentaireRepository.findAll(spec);
-        return commentaireMapper.toDto(commentaire);
+        return commentaire;
     }
 
     /**
@@ -88,12 +89,12 @@ public class CommentaireService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public CommentaireDTO findOne(Long id) {
+    public Commentaire findOne(Long id) {
         log.debug("Request to get Commentaire : {}", id);
         Commentaire commentaire = commentaireRepository.findOne(id);
-
-        return commentaireMapper.toDto(commentaire);
+        return commentaire;
     }
+
 
     /**
      * Delete the commentaire by id.
@@ -108,12 +109,10 @@ public class CommentaireService {
 
     private Specification<Commentaire> specificationBuild(List<SearchCriteria> params ) {
         if (params.size() == 0) { return null; }
-
         List<Specification<Commentaire>> specs = new ArrayList<Specification<Commentaire>>();
         for (SearchCriteria param : params) {
             specs.add(new CommentaireSpecification(param));
         }
-
         Specification<Commentaire> result = specs.get(0);
         for (int i = 1; i < specs.size(); i++) {
             result = Specifications.where(result).and(specs.get(i));

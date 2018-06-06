@@ -31,5 +31,17 @@ public interface TraceRepository extends JpaRepository<Trace, Long>, JpaSpecific
                                @Param("latitudeMin") double latitudeMin);
 
 
-    Trace findById(Long id);
+/*    public final static String TRACE_LISIBLE = "SELECT t FROM Trace t " +
+            "WHERE id = :id" +
+            "AND positionx <= :longitudeMax " +
+            "AND positionx >= :longitudeMin " +
+            "AND positiony <= :latitudeMax " +
+            "AND positiony >= :latitudeMin";
+
+    @Query(TRACE_LISIBLE)
+    Trace obtenirAvecId(@Param("id") long id,
+                        @Param("longitudeMax") double longitudeMax,
+                        @Param("longitudeMin") double longitudeMin,
+                        @Param("latitudeMax") double latitudeMax,
+                        @Param("latitudeMin") double latitudeMin);*/
 }

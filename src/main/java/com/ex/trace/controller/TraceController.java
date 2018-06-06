@@ -1,8 +1,11 @@
 package com.ex.trace.controller;
 
 
+import com.ex.trace.domaine.Trace;
 import com.ex.trace.service.TraceService;
 import com.ex.trace.service.dto.TraceDTO;
+import com.ex.trace.service.mapper.TraceMapper;
+import com.ex.trace.service.mapper.TraceMapperComplet;
 import com.ex.trace.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +32,14 @@ public class TraceController {
 
     private final TraceService traceService;
 
-    public TraceController(TraceService traceService) {
+    private final TraceMapperComplet traceMapperComplet;
+
+    private final TraceMapper traceMapper;
+
+    public TraceController(TraceService traceService , TraceMapper traceMapper, TraceMapperComplet traceMapperComplet) {
         this.traceService = traceService;
+        this.traceMapper        = traceMapper;
+        this.traceMapperComplet = traceMapperComplet;
     }
 
     /**
@@ -41,10 +50,10 @@ public class TraceController {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/trace")
-    public ResponseEntity<TraceDTO> createTrace(@Valid @RequestBody TraceDTO traceDTO) throws URISyntaxException {
+    public ResponseEntity<TraceDTO> ajouterTrace ( @Valid @RequestBody TraceDTO traceDTO) throws URISyntaxException {
         log.debug("requete REST pour sauvegarder Trace : {}", traceDTO);
-        TraceDTO result = traceService.save(traceDTO);
-
+        Trace trace = traceService.save( traceMapperComplet.toEntity(traceDTO) );
+        TraceDTO result = traceMapperComplet.toDto(trace);
         return ResponseEntity.created(
                 new URI("/api/trace/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -57,9 +66,12 @@ public class TraceController {
      * @return ResponseEntity avec status 200 (OK) et la liste des trace dans le body
      */
     @GetMapping("/trace")
-    public List<TraceDTO> getAllTrace(@RequestParam double positionX, double positionY ) {
+    public ResponseEntity< List<TraceDTO> > afficherTouteTrace ( @RequestParam double positionX , @RequestParam  double positionY ) {
         log.debug("requete REST pour obtenir une liste de Trace");
-        return traceService.findAll(positionX, positionY);
+        List<Trace> traces =  traceService.afficherToutAProximite(positionX, positionY);
+        List<TraceDTO>  tracesDTO = traceMapper.toDto(traces);
+        return ResponseEntity.ok(tracesDTO);
+
     }
 
     /**
@@ -70,17 +82,17 @@ public class TraceController {
      */
 
     @GetMapping("/trace/{id}")
-    public ResponseEntity<TraceDTO> getTrace(@PathVariable Long id, @RequestParam float positionX, float positionY ) {
+    public ResponseEntity<TraceDTO> getTrace(@PathVariable Long id, @RequestParam float positionX, @RequestParam float positionY ) {
         log.debug("requete REST to get Trace : {}", id);
         TraceDTO traceDTO = null;
         try {
-            traceDTO = traceService.lirePoint(id, positionX, positionY);
+            Trace trace = traceService.afficherAProximite(id, positionX, positionY);
+            traceDTO =  traceMapperComplet.toDto(trace);
             return ResponseEntity.ok(traceDTO);
 
         } catch (Exception e) {
             return new ResponseEntity<>(traceDTO, HttpStatus.NOT_FOUND);
         }
-
     }
 
 

@@ -1,7 +1,10 @@
 package com.ex.trace.controller;
 
+import com.ex.trace.domaine.Commentaire;
+import com.ex.trace.repository.CommentaireRepository;
 import com.ex.trace.service.CommentaireService;
 import com.ex.trace.service.dto.CommentaireDTO;
+import com.ex.trace.service.mapper.CommentaireMapper;
 import com.ex.trace.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +31,26 @@ public class CommentaireController {
 
     private final CommentaireService commentaireService;
 
-    public CommentaireController(CommentaireService commentaireService) {
+    private final CommentaireMapper commentaireMapper;
+
+    public CommentaireController( CommentaireService commentaireService , CommentaireMapper commentaireMapper) {
         this.commentaireService = commentaireService;
+        this.commentaireMapper  = commentaireMapper;
     }
+
+    @GetMapping("/{traceId}/commentaire")
+    public List<CommentaireDTO> lireCommentaireParTrace ( @PathVariable Long traceId,
+                                                          @RequestParam double positionX, double positionY ) {
+        log.debug("requete REST pour obtenir une liste de Commentaire");
+        List<Commentaire> commentaires = null;
+        try {
+            commentaires = commentaireService.LireCommentaireParTrace( traceId, positionX, positionY );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return commentaireMapper.toDto(commentaires);
+    }
+
 
     /**
      * POST  /commentaire : Creer un nouveau commentaire
@@ -40,45 +60,27 @@ public class CommentaireController {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/commentaire")
-    public ResponseEntity<CommentaireDTO> createCommentaire( @Valid @RequestBody CommentaireDTO commentaireDTO, @RequestParam double positionX, double positionY) throws URISyntaxException {
+    public ResponseEntity<CommentaireDTO> ajouterCommentaire ( @Valid @RequestBody CommentaireDTO commentaireDTO,
+                                                               @RequestParam double positionX, double positionY) throws URISyntaxException {
         log.debug("requete REST pour sauvegarder Commentaire : {}", commentaireDTO);
         CommentaireDTO result = null;
         try {
-            result = commentaireService.save(commentaireDTO, positionX, positionY);
+            Commentaire commentaire = commentaireService.save( commentaireMapper.toEntity(commentaireDTO), positionX, positionY);
+            result = commentaireMapper.toDto( commentaire);
             return ResponseEntity.created(
                     new URI("/api/commentaire/" + result.getId()))
-                    .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                    .headers(HeaderUtil.createEntityCreationAlert( ENTITY_NAME, result.getId().toString()))
                     .body(result);
         } catch (Exception e) {
-            e.getStackTrace();
-            return new ResponseEntity<>(commentaireDTO, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(commentaireDTO, HttpStatus.NOT_FOUND);
         }
     }
 
-    /**
-     * GET  /commentaire : get all the commentaire.
-     *
-     * @return ResponseEntity avec status 200 (OK) et la liste des commentaire dans le body
-     */
-    @GetMapping("/commentaire")
-    public List<CommentaireDTO> getAllCommentaire(@RequestParam(value = "search", required = false ) String criteria ) {
-        log.debug("requete REST pour obtenir une liste de Commentaire avec criteria: {}", criteria);
-        return commentaireService.findAll(criteria);
-    }
 
-    /**
-     * GET  /commentaire/:id : get the "id" commentaire.
-     *
-     * @param id l'id du commentaire à retourner
-     * @return  ResponseEntity avec status 200 (OK) et avec le commentaire dans le body, ou status 404 (Not Found)
-     */
 
-    @GetMapping("/commentaire/{id}")
-    public ResponseEntity<CommentaireDTO> getCommentaire(@PathVariable Long id) {
-        log.debug("requete REST to get Commentaire : {}", id);
-        CommentaireDTO commentaireDTO = commentaireService.findOne(id);
-        return new ResponseEntity<>(commentaireDTO, HttpStatus.FOUND);
-    }
+
+
+
 
 
 
