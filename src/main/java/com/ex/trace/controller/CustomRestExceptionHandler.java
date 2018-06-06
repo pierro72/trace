@@ -1,6 +1,8 @@
 package com.ex.trace.controller;
 
 import com.ex.trace.ApiError;
+import com.ex.trace.exception.ResourceNotFoundException;
+import javassist.NotFoundException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -101,6 +103,20 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     // 404
+    @ExceptionHandler({ NotFoundException.class })
+    public ResponseEntity<Object> handleException(NotFoundException ex) {
+        String error = ex.getMessage();
+        ApiError apiError =  new ApiError(HttpStatus.FORBIDDEN, ex.getLocalizedMessage(), error);
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({ ResourceNotFoundException.class })
+    public ResponseEntity<Object> handleException( ResourceNotFoundException ex, WebRequest request) {
+        String error = "Aucune ressource trouvé";
+        ApiError apiError =  new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), error);
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(final NoHandlerFoundException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
         logger.info(ex.getClass().getName());

@@ -1,6 +1,7 @@
 package com.ex.trace.service;
 
 import com.ex.trace.domaine.Trace;
+import com.ex.trace.exception.ResourceNotFoundException;
 import com.ex.trace.repository.TraceRepository;
 import com.ex.trace.service.dto.TraceDTO;
 import com.ex.trace.service.mapper.TraceMapperComplet;
@@ -95,9 +96,13 @@ public class TraceService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Trace afficher(Long id)  {
+    public Trace afficher(Long id) throws ResourceNotFoundException {
         log.debug("Request to get Trace : {}", id);
-        return traceRepository.findOne(id);
+        Trace trace = traceRepository.findOne(id);
+        if (trace == null) {
+            throw new ResourceNotFoundException(Trace.class.getSimpleName(), id);
+        }
+        return trace;
     }
 
     @Transactional(readOnly = true)

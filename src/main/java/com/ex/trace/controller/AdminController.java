@@ -9,6 +9,7 @@ import com.ex.trace.service.dto.TraceDTO;
 import com.ex.trace.service.mapper.CommentaireMapper;
 import com.ex.trace.service.mapper.TraceMapper;
 import com.ex.trace.service.mapper.TraceMapperComplet;
+import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -47,16 +48,16 @@ public class AdminController {
      * @return ResponseEntity avec status 200 (OK) et la liste des trace dans le body
      */
     @GetMapping("/trace")
-    public ResponseEntity< List<TraceDTO> > AfficherTouteTrace ( @RequestParam(value = "critere", required = false ) String criteria ) {
+    public ResponseEntity AfficherTouteTrace ( @RequestParam(value = "critere", required = false ) String criteria ) {
         log.debug("requete REST pour obtenir une liste de Trace");
         List<TraceDTO>  tracesDTO = null;
-        try {
+/*        try {*/
             List<Trace> traces =  traceService.afficherTout(criteria);
             tracesDTO = traceMapperComplet.toDto(traces);
             return ResponseEntity.ok(tracesDTO);
-        } catch (Exception e) {
-            return new ResponseEntity<>(tracesDTO, HttpStatus.NOT_FOUND);
-        }
+/*        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("coucou");
+        }*/
     }
 
     /**
@@ -68,7 +69,8 @@ public class AdminController {
     @GetMapping("/trace/{id}")
     public ResponseEntity<TraceDTO> lireTrace ( @PathVariable Long id) {
         log.debug("requete REST pour obtenir une Trace : {}", id);
-        Trace trace = traceService.afficher( id );
+        Trace trace = null;
+        trace = traceService.afficher( id );
         TraceDTO traceDTO =  traceMapperComplet.toDto(trace);
         return ResponseEntity.ok(traceDTO);
     }
