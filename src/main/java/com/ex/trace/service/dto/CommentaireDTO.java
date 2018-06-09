@@ -1,15 +1,20 @@
 package com.ex.trace.service.dto;
 
+import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 public class CommentaireDTO {
 
     private Long id;
 
+    @Size(max = 1024) @Column(length = 1024)  @NotNull
     private String contenu;
 
     private Date date;
 
+    @NotNull
     private Long traceId;
 
     public Long getId() {

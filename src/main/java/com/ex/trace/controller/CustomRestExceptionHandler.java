@@ -2,6 +2,7 @@ package com.ex.trace.controller;
 
 import com.ex.trace.ApiError;
 import com.ex.trace.exception.ResourceNotFoundException;
+import com.ex.trace.exception.TraceNotProxiException;
 import javassist.NotFoundException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +22,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
@@ -104,10 +104,17 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     // 404
     @ExceptionHandler({ NotFoundException.class })
-    public ResponseEntity<Object> handleException(NotFoundException ex) {
+    public ResponseEntity<Object> handleException( NotFoundException ex) {
         String error = ex.getMessage();
-        ApiError apiError =  new ApiError(HttpStatus.FORBIDDEN, ex.getLocalizedMessage(), error);
+        ApiError apiError =  new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), error);
         return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({ TraceNotProxiException.class })
+    public ResponseEntity<Object> handleException( TraceNotProxiException ex) {
+        String error = ex.getMessage();
+        ApiError apiError =  new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), error);
+        return new ResponseEntity<Object> (apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler({ ResourceNotFoundException.class })

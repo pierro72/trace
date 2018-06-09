@@ -3,6 +3,8 @@ package com.ex.trace.service;
 import com.ex.trace.domaine.Commentaire;
 
 import com.ex.trace.domaine.Trace;
+import com.ex.trace.exception.ResourceNotFoundException;
+import com.ex.trace.exception.TraceNotProxiException;
 import com.ex.trace.repository.CommentaireRepository;
 import com.ex.trace.service.mapper.CommentaireMapper;
 import com.ex.trace.specification.CommentaireSpecification;
@@ -47,10 +49,10 @@ public class CommentaireService {
      * @param commentaire the entity pour sauvegarder
      * @return the persisted entity
      */
-    public Commentaire save(Commentaire commentaire, double positionX, double positionY ) throws Exception {
+    public Commentaire save(Commentaire commentaire, double positionX, double positionY ) throws TraceNotProxiException {
         log.debug("Request pour sauvegarder Commentaire : {}", commentaire);
         if (!traceService.estLisible(positionX, positionY, commentaire.getTrace() )){
-            throw new Exception("trace trop loigné pour commenter");
+            throw new TraceNotProxiException(commentaire.getTrace().getId(), TraceNotProxiException.ERR3);
         }
         commentaire.setDate(Calendar.getInstance().getTime());
         commentaire = commentaireRepository.save(commentaire);
@@ -58,8 +60,12 @@ public class CommentaireService {
     }
 
     @Transactional(readOnly = true)
-    public List<Commentaire> LireCommentaireParTrace(Long idTrace, Double x, Double y) throws Exception {
-        Trace trace = traceService.afficherAProximite(idTrace, x, y);
+    public List<Commentaire> LireCommentaireParTrace(Long idTrace, Double x, Double y) {
+        Trace trace = traceService.afficher(idTrace);
+        if (!traceService.estLisible(x, y, trace )){
+            throw new TraceNotProxiException( trace.getId(), TraceNotProxiException.ERR2);
+        }
+        /*Trace trace = traceService.afficherAProximite(idTrace, x, y);*/
         List<Commentaire> commentaires = commentaireRepository.findAllByTrace(trace);
         return commentaires;
     }
@@ -92,6 +98,9 @@ public class CommentaireService {
     public Commentaire findOne(Long id) {
         log.debug("Request to get Commentaire : {}", id);
         Commentaire commentaire = commentaireRepository.findOne(id);
+        if (commentaire == null){
+            throw new ResourceNotFoundException( Commentaire.class.getSimpleName(), id);
+        }
         return commentaire;
     }
 
@@ -102,8 +111,11 @@ public class CommentaireService {
      * @param id the id of the entity
      */
     public void delete(Long id) {
-        log.debug("Request to delete Commentaire2 : {}", id);
+        log.debug("Request to delete Commentaire : {}", id);
         Commentaire commentaire = commentaireRepository.findOne(id);
+        if (commentaire == null){
+            throw new ResourceNotFoundException( Commentaire.class.getSimpleName(), id);
+        }
         commentaireRepository.delete(commentaire);
     }
 

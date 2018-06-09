@@ -56,7 +56,7 @@ public class TraceController {
         TraceDTO result = traceMapperComplet.toDto(trace);
         return ResponseEntity.created(
                 new URI("/api/trace/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .headers(HeaderUtil.ajouterAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
@@ -70,7 +70,7 @@ public class TraceController {
         log.debug("requete REST pour obtenir une liste de Trace");
         List<Trace> traces =  traceService.afficherToutAProximite(positionX, positionY);
         List<TraceDTO>  tracesDTO = traceMapper.toDto(traces);
-        return ResponseEntity.ok(tracesDTO);
+        return new ResponseEntity<>(tracesDTO, HttpStatus.OK);
 
     }
 
@@ -84,15 +84,9 @@ public class TraceController {
     @GetMapping("/trace/{id}")
     public ResponseEntity<TraceDTO> getTrace(@PathVariable Long id, @RequestParam float positionX, @RequestParam float positionY ) {
         log.debug("requete REST to get Trace : {}", id);
-        TraceDTO traceDTO = null;
-        try {
-            Trace trace = traceService.afficherAProximite(id, positionX, positionY);
-            traceDTO =  traceMapperComplet.toDto(trace);
-            return ResponseEntity.ok(traceDTO);
-
-        } catch (Exception e) {
-            return new ResponseEntity<>(traceDTO, HttpStatus.NOT_FOUND);
-        }
+        Trace trace = traceService.afficherAProximite(id, positionX, positionY);
+        TraceDTO traceDTO =  traceMapperComplet.toDto(trace);
+        return new ResponseEntity<>(traceDTO, HttpStatus.OK);
     }
 
 

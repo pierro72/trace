@@ -1,5 +1,9 @@
 package com.ex.trace.service.dto;
 import com.ex.trace.TraceType;
+
+import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,12 +11,16 @@ public class TraceDTO {
 
     private Long id;
 
+    @Size(max = 1024) @Column(length = 1024)  @NotNull
     private String contenu;
 
+    @NotNull
     private double positionX;
 
+    @NotNull
     private double positionY;
 
+    @NotNull
     private TraceType traceType;
 
     private Set<CommentaireDTO> commentaires = new HashSet<>();

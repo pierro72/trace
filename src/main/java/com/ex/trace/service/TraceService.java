@@ -1,7 +1,9 @@
 package com.ex.trace.service;
 
+import com.ex.trace.domaine.Commentaire;
 import com.ex.trace.domaine.Trace;
 import com.ex.trace.exception.ResourceNotFoundException;
+import com.ex.trace.exception.TraceNotProxiException;
 import com.ex.trace.repository.TraceRepository;
 import com.ex.trace.service.dto.TraceDTO;
 import com.ex.trace.service.mapper.TraceMapperComplet;
@@ -50,7 +52,6 @@ public class TraceService {
      * @param trace the entity pour sauvegarder
      * @return the persisted entity
      */
-    /*FIXME: NO DTO*/
     public Trace save(Trace trace) {
         log.debug("Request pour sauvegarder Trace : {}", trace);
         trace.setDate(Calendar.getInstance().getTime());
@@ -83,7 +84,7 @@ public class TraceService {
         Matcher matcher = pattern.matcher(search + ",");
         List<SearchCriteria> params = new ArrayList<SearchCriteria>();
         while (matcher.find()) {
-            params.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
+            params.add( new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
         }
         Specification<Trace> spec = specificationBuild(params);
         return traceRepository.findAll(spec);
@@ -99,20 +100,34 @@ public class TraceService {
     public Trace afficher(Long id) throws ResourceNotFoundException {
         log.debug("Request to get Trace : {}", id);
         Trace trace = traceRepository.findOne(id);
-        if (trace == null) {
-            throw new ResourceNotFoundException(Trace.class.getSimpleName(), id);
+        if ( trace == null) {
+            throw new ResourceNotFoundException( Trace.class.getSimpleName(), id);
         }
         return trace;
     }
 
     @Transactional(readOnly = true)
-    public Trace afficherAProximite(Long id, double positionX, double positionY ) throws Exception {
+    public Trace afficherAProximite(Long id, double positionX, double positionY ) throws TraceNotProxiException {
         log.debug("Request pour obtenir la trace: {}", id);
         Trace trace = traceRepository.findOne(id);
         if ( !estLisible( positionX, positionY, trace) ){
-            throw new Exception("trop loin");
+            throw new TraceNotProxiException(id, TraceNotProxiException.ERR1);
         }
         return trace;
+    }
+
+    /**
+     * Delete the commentaire by id.
+     *
+     * @param id the id of the entity
+     */
+    public void delete(Long id) {
+        log.debug("Request to delete Commentaire : {}", id);
+        Trace trace = traceRepository.findOne(id);
+        if (trace == null){
+            throw new ResourceNotFoundException( Trace.class.getSimpleName(), id);
+        }
+        traceRepository.delete(trace);
     }
 
     /**

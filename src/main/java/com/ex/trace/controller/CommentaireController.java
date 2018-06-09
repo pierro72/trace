@@ -39,16 +39,11 @@ public class CommentaireController {
     }
 
     @GetMapping("/{traceId}/commentaire")
-    public List<CommentaireDTO> lireCommentaireParTrace ( @PathVariable Long traceId,
-                                                          @RequestParam double positionX, double positionY ) {
+    public ResponseEntity< List<CommentaireDTO>> lireCommentaireParTrace ( @PathVariable Long traceId, @RequestParam double positionX, @RequestParam double positionY ) {
         log.debug("requete REST pour obtenir une liste de Commentaire");
-        List<Commentaire> commentaires = null;
-        try {
-            commentaires = commentaireService.LireCommentaireParTrace( traceId, positionX, positionY );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return commentaireMapper.toDto(commentaires);
+        List<Commentaire>  commentaires = commentaireService.LireCommentaireParTrace( traceId, positionX, positionY );
+        List<CommentaireDTO> commentairesDTO = commentaireMapper.toDto(commentaires);
+        return new ResponseEntity<>(commentairesDTO, HttpStatus.OK);
     }
 
 
@@ -60,28 +55,14 @@ public class CommentaireController {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/commentaire")
-    public ResponseEntity<CommentaireDTO> ajouterCommentaire ( @Valid @RequestBody CommentaireDTO commentaireDTO,
-                                                               @RequestParam double positionX, double positionY) throws URISyntaxException {
+    public ResponseEntity<CommentaireDTO> ajouterCommentaire ( @Valid @RequestBody CommentaireDTO commentaireDTO, @RequestParam double positionX, @RequestParam double positionY) throws URISyntaxException {
         log.debug("requete REST pour sauvegarder Commentaire : {}", commentaireDTO);
-        CommentaireDTO result = null;
-        try {
-            Commentaire commentaire = commentaireService.save( commentaireMapper.toEntity(commentaireDTO), positionX, positionY);
-            result = commentaireMapper.toDto( commentaire);
-            return ResponseEntity.created(
-                    new URI("/api/commentaire/" + result.getId()))
-                    .headers(HeaderUtil.createEntityCreationAlert( ENTITY_NAME, result.getId().toString()))
-                    .body(result);
-        } catch (Exception e) {
-            return new ResponseEntity<>(commentaireDTO, HttpStatus.NOT_FOUND);
-        }
+        Commentaire commentaire = commentaireService.save( commentaireMapper.toEntity(commentaireDTO), positionX, positionY);
+        CommentaireDTO result = commentaireMapper.toDto( commentaire);
+        return ResponseEntity.created(
+            new URI("/api/commentaire/" + result.getId()))
+            .headers(HeaderUtil.ajouterAlert( ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
-
-
-
-
-
-
-
-
 
 }
