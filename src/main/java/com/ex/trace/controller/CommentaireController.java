@@ -1,7 +1,6 @@
 package com.ex.trace.controller;
 
 import com.ex.trace.domaine.Commentaire;
-import com.ex.trace.repository.CommentaireRepository;
 import com.ex.trace.service.CommentaireService;
 import com.ex.trace.service.dto.CommentaireDTO;
 import com.ex.trace.service.mapper.CommentaireMapper;
@@ -57,7 +56,7 @@ public class CommentaireController {
     @PostMapping("/commentaire")
     public ResponseEntity<CommentaireDTO> ajouterCommentaire ( @Valid @RequestBody CommentaireDTO commentaireDTO, @RequestParam double positionX, @RequestParam double positionY) throws URISyntaxException {
         log.debug("requete REST pour sauvegarder Commentaire : {}", commentaireDTO);
-        Commentaire commentaire = commentaireService.save( commentaireMapper.toEntity(commentaireDTO), positionX, positionY);
+        Commentaire commentaire = commentaireService.ajouter( commentaireMapper.toEntity(commentaireDTO), positionX, positionY);
         CommentaireDTO result = commentaireMapper.toDto( commentaire);
         return ResponseEntity.created(
             new URI("/api/commentaire/" + result.getId()))

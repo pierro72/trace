@@ -1,5 +1,6 @@
 package com.ex.trace.service;
 
+import com.ex.trace.TraceType;
 import com.ex.trace.domaine.Commentaire;
 import com.ex.trace.domaine.Trace;
 import com.ex.trace.exception.ResourceNotFoundException;
@@ -14,6 +15,8 @@ import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
@@ -73,21 +76,23 @@ public class TraceService {
         return traceRepository.findProxiTrace( longitudeMax, longitudeMin, latitudeMax, latitudeMin );
     }
 
+    /*FIXME: Peagable*/
     /**
      * Get all the trace.
      *
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<Trace> afficherTout(String search) {
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
-        Matcher matcher = pattern.matcher(search + ",");
+    public Page<Trace> afficherTout(String search, Pageable pageable) {
+
+        Pattern pattern = Pattern.compile("([a-zA-Z_0-9\\.]+)(:|<|>)([a-zA-Z_0-9\\.]+|[+-]?([0-9]*[.])?[0-9]+);", Pattern.UNICODE_CHARACTER_CLASS);
+        Matcher matcher = pattern.matcher(search + ";");
         List<SearchCriteria> params = new ArrayList<SearchCriteria>();
         while (matcher.find()) {
             params.add( new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
         }
         Specification<Trace> spec = specificationBuild(params);
-        return traceRepository.findAll(spec);
+        return traceRepository.findAll(spec, pageable);
     }
 
     /**
@@ -121,8 +126,8 @@ public class TraceService {
      *
      * @param id the id of the entity
      */
-    public void delete(Long id) {
-        log.debug("Request to delete Commentaire : {}", id);
+    public void supprimer(Long id) {
+        log.debug("Request to supprimer Commentaire : {}", id);
         Trace trace = traceRepository.findOne(id);
         if (trace == null){
             throw new ResourceNotFoundException( Trace.class.getSimpleName(), id);
@@ -130,16 +135,6 @@ public class TraceService {
         traceRepository.delete(trace);
     }
 
-    /**
-     * Delete the trace by id.
-     *
-     * @param id the id of the entity
-     */
-    public void suprimer (Long id) {
-        log.debug("Request to delete Trace : {}", id);
-        Trace trace = traceRepository.findOne(id);
-        traceRepository.delete(trace);
-    }
 
     public boolean estLisible(double x, double y, Trace trace  ){
         double distance = obtenirDistance(x, y, trace.getPositionX(), trace.getPositionY());

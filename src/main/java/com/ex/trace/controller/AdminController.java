@@ -7,12 +7,17 @@ import com.ex.trace.service.TraceService;
 import com.ex.trace.service.dto.CommentaireDTO;
 import com.ex.trace.service.dto.TraceDTO;
 import com.ex.trace.service.mapper.CommentaireMapper;
-import com.ex.trace.service.mapper.TraceMapper;
 import com.ex.trace.service.mapper.TraceMapperComplet;
 import com.ex.trace.util.HeaderUtil;
-import javassist.NotFoundException;
+import com.ex.trace.util.PaginationUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +31,8 @@ import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
  */
 @RestController
 @RequestMapping("/api/admin")
+
+@Api(value = "/api/admin", description = "Operations pour consulter/supprimer toutes les traces et commentaires")
 public class AdminController {
 
     private final Logger log = LoggerFactory.getLogger(CommentaireController.class);
@@ -37,6 +44,7 @@ public class AdminController {
     private final CommentaireService commentaireService;
 
     private final CommentaireMapper commentaireMapper;
+
 
     public AdminController( TraceService traceService, TraceMapperComplet traceMapperComplet ,CommentaireService commentaireService , CommentaireMapper commentaireMapper) {
         this.traceService = traceService;
@@ -51,11 +59,12 @@ public class AdminController {
      * @return ResponseEntity avec status 200 (OK) et la liste des trace dans le body
      */
     @GetMapping("/trace")
-    public ResponseEntity AfficherTouteTrace ( @RequestParam(value = "critere", required = false ) String criteria ) {
+    public ResponseEntity AfficherTouteTrace ( @RequestParam(value = "critere", required = false ) String criteria, Pageable pageable ) {
         log.debug("requete REST pour obtenir une liste de Trace");
-        List<Trace> traces =  traceService.afficherTout(criteria);
-        List<TraceDTO>  tracesDTO = traceMapperComplet.toDto(traces);
-        return new ResponseEntity<>(tracesDTO, HttpStatus.OK);
+        Page<Trace> traces =  traceService.afficherTout(criteria, pageable);
+        Page<TraceDTO>  page = traces.map(traceMapperComplet::toDto);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/trace");
+        return new ResponseEntity<>(page.getContent(), headers,  HttpStatus.OK);
     }
 
     /**
@@ -79,11 +88,12 @@ public class AdminController {
      * @return ResponseEntity avec status 200 (OK) et la liste des commentaire dans le body
      */
     @GetMapping("/commentaire")
-    public ResponseEntity< List<CommentaireDTO> >  afficherToutCommentaire ( @RequestParam(value = "critere", required = false ) String criteria ) {
+    public ResponseEntity< List<CommentaireDTO> >  afficherToutCommentaire ( @RequestParam(value = "critere", required = false ) String criteria, Pageable pageable ) {
         log.debug("requete REST pour obtenir une liste de Commentaire avec criteria: {}", criteria);
-        List<Commentaire> commentaires = commentaireService.findAll( criteria);
-        List<CommentaireDTO> commentairesDTO = commentaireMapper.toDto( commentaires);
-        return new ResponseEntity<>(commentairesDTO, HttpStatus.OK);
+        Page <Commentaire> commentaires = commentaireService.afficherTout( criteria, pageable);
+        Page <CommentaireDTO> commentairesDTO = commentaires.map(commentaireMapper::toDto);
+        HttpHeaders header = PaginationUtil.generatePaginationHttpHeaders(commentairesDTO, "/api/commentaire");
+        return new ResponseEntity<>(commentairesDTO.getContent(), header, HttpStatus.OK);
     }
 
     /**
@@ -95,7 +105,7 @@ public class AdminController {
     @GetMapping("/commentaire/{id}")
     public ResponseEntity<CommentaireDTO> lireCommentaire ( @PathVariable Long id) {
         log.debug("requete REST pour obtenir Commentaire : {}", id);
-        Commentaire commentaire = commentaireService.findOne(id);
+        Commentaire commentaire = commentaireService.afficher(id);
         CommentaireDTO commentaireDTO = commentaireMapper.toDto(commentaire);
         return new ResponseEntity<>(commentaireDTO, HttpStatus.OK);
     }
@@ -108,8 +118,8 @@ public class AdminController {
      */
     @DeleteMapping("/commentaire/{id}")
     public ResponseEntity<Void> supprimerCommentaire ( @PathVariable Long id) {
-        log.debug("requete REST to delete commentaire : {}", id);
-        commentaireService.delete(id);
+        log.debug("requete REST to supprimer commentaire : {}", id);
+        commentaireService.supprimer(id);
         return ResponseEntity.ok().headers(HeaderUtil.supprimerAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -121,8 +131,8 @@ public class AdminController {
      */
     @DeleteMapping("/trace/{id}")
     public ResponseEntity<Void> supprimerTrace( @PathVariable Long id) {
-        log.debug("requete REST to delete trace : {}", id);
-        traceService.delete(id);
+        log.debug("requete REST to supprimer trace : {}", id);
+        traceService.supprimer(id);
         return ResponseEntity.ok().headers(HeaderUtil.supprimerAlert(ENTITY_NAME, id.toString())).build();
     }
 }

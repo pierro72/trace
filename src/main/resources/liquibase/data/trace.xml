@@ -9,15 +9,7 @@
              stripComments="true">
             INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.997779', '0.193635', '1');
             INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.995014', '0.191129', '1');
-            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.990312', '0.146781', '1');
-            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.990312', '0.146781', '1');
-            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.990312', '0.146781', '1');
-            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.990312', '0.146781', '1');
-            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.990312', '0.146781', '1');
-            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.990312', '0.146781', '1');
-            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.990312', '0.146781', '1');
-            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.990312', '0.146781', '1');
-            INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.990312', '0.146781', '1');
+
         </sql>
     </changeSet>
 
@@ -31,6 +23,15 @@
                  stripComments="true"/>
     </changeSet>
 
+    <changeSet author="pyc" id="sqlFile-commentaire">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="commentaire.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
 
 </databaseChangeLog>
 

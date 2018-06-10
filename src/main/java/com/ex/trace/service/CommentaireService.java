@@ -11,6 +11,8 @@ import com.ex.trace.specification.CommentaireSpecification;
 import com.ex.trace.util.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,7 @@ public class CommentaireService {
      * @param commentaire the entity pour sauvegarder
      * @return the persisted entity
      */
-    public Commentaire save(Commentaire commentaire, double positionX, double positionY ) throws TraceNotProxiException {
+    public Commentaire ajouter(Commentaire commentaire, double positionX, double positionY ) throws TraceNotProxiException {
         log.debug("Request pour sauvegarder Commentaire : {}", commentaire);
         if (!traceService.estLisible(positionX, positionY, commentaire.getTrace() )){
             throw new TraceNotProxiException(commentaire.getTrace().getId(), TraceNotProxiException.ERR3);
@@ -70,22 +72,23 @@ public class CommentaireService {
         return commentaires;
     }
 
+    /*FIXME: Peagable*/
     /**
      * Get all the commentaire.
      *
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<Commentaire> findAll(String search) {
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
-        Matcher matcher = pattern.matcher(search + ",");
+    public Page<Commentaire> afficherTout(String search, Pageable pageable) {
+        Pattern pattern = Pattern.compile("([a-zA-Z_0-9\\.]+)(:|<|>)([a-zA-Z_0-9\\.]+|[+-]?([0-9]*[.])?[0-9]+);", Pattern.UNICODE_CHARACTER_CLASS);
+        Matcher matcher = pattern.matcher(search + ";");
         List<SearchCriteria> params = new ArrayList<SearchCriteria>();
         while (matcher.find()) {
             params.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
         }
         Specification<Commentaire> spec = specificationBuild(params);
-        List<Commentaire> commentaire = commentaireRepository.findAll(spec);
-        return commentaire;
+        Page<Commentaire> commentaires = commentaireRepository.findAll(spec, pageable);
+        return commentaires;
     }
 
     /**
@@ -95,7 +98,7 @@ public class CommentaireService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Commentaire findOne(Long id) {
+    public Commentaire afficher(Long id) {
         log.debug("Request to get Commentaire : {}", id);
         Commentaire commentaire = commentaireRepository.findOne(id);
         if (commentaire == null){
@@ -110,8 +113,8 @@ public class CommentaireService {
      *
      * @param id the id of the entity
      */
-    public void delete(Long id) {
-        log.debug("Request to delete Commentaire : {}", id);
+    public void supprimer(Long id) {
+        log.debug("Request to supprimer Commentaire : {}", id);
         Commentaire commentaire = commentaireRepository.findOne(id);
         if (commentaire == null){
             throw new ResourceNotFoundException( Commentaire.class.getSimpleName(), id);
@@ -131,5 +134,24 @@ public class CommentaireService {
         }
         return result;
     }
+
+    /**
+     * Function to convert TuileGroupeCriteria to a {@link Specifications}
+     */
+/*    private Specifications<Commentaire> createSpecification(List<SearchCriteria> params) {
+        Specifications<Commentaire> specification = Specifications.where(null);
+        if (params != null) {
+            if (params.getId() != null) {
+                specification = specification.and(buildSpecification(criteria.getId(), TuileGroupe_.id));
+            }
+            if (params.getNom() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getNom(), TuileGroupe_.nom));
+            }
+            if (params.getTuilesId() != null) {
+                specification = specification.and(buildReferringEntitySpecification(criteria.getTuilesId(), TuileGroupe_.tuiles, Tuile_.id));
+            }
+        }
+        return specification;
+    }*/
 
 }
