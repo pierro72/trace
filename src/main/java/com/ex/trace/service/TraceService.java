@@ -87,11 +87,11 @@ public class TraceService {
 
         Pattern pattern = Pattern.compile("([a-zA-Z_0-9\\.]+)(:|<|>)([a-zA-Z_0-9\\.]+|[+-]?([0-9]*[.])?[0-9]+);", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcher = pattern.matcher(search + ";");
-        List<SearchCriteria> params = new ArrayList<SearchCriteria>();
+        List<SearchCriteria> searchCriterias = new ArrayList<SearchCriteria>();
         while (matcher.find()) {
-            params.add( new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
+            searchCriterias.add( new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
         }
-        Specification<Trace> spec = specificationBuild(params);
+        Specification<Trace> spec = specificationBuild(searchCriterias);
         return traceRepository.findAll(spec, pageable);
     }
 

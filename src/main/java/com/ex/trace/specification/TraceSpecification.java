@@ -1,6 +1,7 @@
 package com.ex.trace.specification;
 
 
+import com.ex.trace.TraceType;
 import com.ex.trace.domaine.Trace;
 import com.ex.trace.util.SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,25 +21,42 @@ public class TraceSpecification implements Specification<Trace> {
     }
 
     @Override
-    public Predicate toPredicate
-            (Root<Trace> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+    public Predicate toPredicate(Root<Trace> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
 
-        if (criteria.getOperation().equalsIgnoreCase(">")) {
-            return builder.greaterThanOrEqualTo(
-                    root.<String> get(criteria.getKey()), criteria.getValue().toString());
-        }
-        else if (criteria.getOperation().equalsIgnoreCase("<")) {
-            return builder.lessThanOrEqualTo(
-                    root.<String> get(criteria.getKey()), criteria.getValue().toString());
-        }
-        else if (criteria.getOperation().equalsIgnoreCase(":")) {
-            if (root.get(criteria.getKey()).getJavaType() == String.class) {
-                return builder.like(
-                        root.<String>get(criteria.getKey()), "%" + criteria.getValue() + "%");
-            } else {
-                return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+        String key          = criteria.getKey();
+        String op           = criteria.getOperation();
+        Object val          = criteria.getValue();
+        Predicate predicate = null;
+
+
+        //id
+        if (key.matches("id|positionX|positionY")) {
+            switch (op) {
+                case ">":
+                    predicate = cb.greaterThanOrEqualTo( root.<String>get(key), val.toString());
+                    break;
+                case ":":
+                    predicate =  cb.equal( root.get(key), val);
+                    break;
+                case "<":
+                    predicate =  cb.lessThanOrEqualTo( root.<String>get(key),val.toString());
+                    break;
             }
         }
-        return null;
+
+        //traceType
+        if ( key.matches("traceType")){
+            predicate = cb.equal(root.get(key), TraceType.valueOf(val.toString()));
+        }
+
+        //contenu
+        if (key.equalsIgnoreCase("contenu")) {
+            
+            if (op.equalsIgnoreCase(":")) {
+                predicate =  cb.like(root.<String>get(key), "%" + val + "%");
+            }
+        }
+
+        return  predicate;
     }
 }

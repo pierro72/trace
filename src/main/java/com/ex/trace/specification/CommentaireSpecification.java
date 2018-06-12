@@ -2,16 +2,15 @@ package com.ex.trace.specification;
 
 
 import com.ex.trace.domaine.Commentaire;
+import com.ex.trace.domaine.Trace;
 import com.ex.trace.util.SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
 
 public class CommentaireSpecification implements Specification<Commentaire> {
+
 
     private SearchCriteria criteria;
 
@@ -20,25 +19,56 @@ public class CommentaireSpecification implements Specification<Commentaire> {
     }
 
     @Override
-    public Predicate toPredicate
-            (Root<Commentaire> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+    public Predicate toPredicate (Root<Commentaire> root,  CriteriaQuery<?> cq, CriteriaBuilder cb) {
 
-        if (criteria.getOperation().equalsIgnoreCase(">")) {
-            return builder.greaterThanOrEqualTo(
-                    root.<String> get(criteria.getKey()), criteria.getValue().toString());
-        }
-        else if (criteria.getOperation().equalsIgnoreCase("<")) {
-            return builder.lessThanOrEqualTo(
-                    root.<String> get(criteria.getKey()), criteria.getValue().toString());
-        }
-        else if (criteria.getOperation().equalsIgnoreCase(":")) {
-            if (root.get(criteria.getKey()).getJavaType() == String.class) {
-                return builder.like(
-                        root.<String>get(criteria.getKey()), "%" + criteria.getValue() + "%");
-            } else {
-                return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+
+        String key          = criteria.getKey();
+        String op           = criteria.getOperation();
+        Object val          = criteria.getValue();
+        Predicate predicate = null;
+        Join<Commentaire, Trace> trace = root.join("trace");
+
+        //contenu
+        if (key.equalsIgnoreCase("contenu")) {
+            if (op.equalsIgnoreCase(":")) {
+                predicate =  cb.like(root.<String>get(key), "%" + val + "%");
             }
         }
-        return null;
+
+        //id
+        if (key.equalsIgnoreCase("id")) {
+            switch (op) {
+                case ">":
+                    predicate = cb.greaterThanOrEqualTo( root.<String>get(key), val.toString());
+                break;
+                case ":":
+                    predicate =  cb.equal( root.get(key), val);
+                break;
+                case "<":
+                    predicate =  cb.lessThanOrEqualTo( root.<String>get(key),val.toString());
+                break;
+            }
+        }
+
+
+
+        //traceId
+        if (key.equalsIgnoreCase("traceId")) {
+            predicate = cb.conjunction();
+            switch (op) {
+                case ">":
+                    predicate = cb.greaterThanOrEqualTo( trace.get("id"), val.toString());
+                    break;
+                case ":":
+                    predicate =  cb.equal( trace.get("id"), val);
+                    break;
+                case "<":
+                    predicate =  cb.lessThanOrEqualTo( trace.get("id"), val.toString());
+                    break;
+            }
+        }
+
+        return  predicate;
     }
 }
+

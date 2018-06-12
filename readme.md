@@ -14,6 +14,10 @@ CREATE DATABASE trace OWNER admin;
 
 ALTER USER admin WITH ENCRYPTED PASSWORD 'admin';
 
+### test Api
+
+http://localhost:8080/swagger-ui.htm
+
 
 
 

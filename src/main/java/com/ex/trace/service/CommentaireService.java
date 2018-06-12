@@ -82,11 +82,11 @@ public class CommentaireService {
     public Page<Commentaire> afficherTout(String search, Pageable pageable) {
         Pattern pattern = Pattern.compile("([a-zA-Z_0-9\\.]+)(:|<|>)([a-zA-Z_0-9\\.]+|[+-]?([0-9]*[.])?[0-9]+);", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcher = pattern.matcher(search + ";");
-        List<SearchCriteria> params = new ArrayList<SearchCriteria>();
+        List<SearchCriteria> searchCriterias = new ArrayList<SearchCriteria>();
         while (matcher.find()) {
-            params.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
+            searchCriterias.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
         }
-        Specification<Commentaire> spec = specificationBuild(params);
+        Specification<Commentaire> spec = specificationBuild(searchCriterias);
         Page<Commentaire> commentaires = commentaireRepository.findAll(spec, pageable);
         return commentaires;
     }
@@ -135,23 +135,5 @@ public class CommentaireService {
         return result;
     }
 
-    /**
-     * Function to convert TuileGroupeCriteria to a {@link Specifications}
-     */
-/*    private Specifications<Commentaire> createSpecification(List<SearchCriteria> params) {
-        Specifications<Commentaire> specification = Specifications.where(null);
-        if (params != null) {
-            if (params.getId() != null) {
-                specification = specification.and(buildSpecification(criteria.getId(), TuileGroupe_.id));
-            }
-            if (params.getNom() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getNom(), TuileGroupe_.nom));
-            }
-            if (params.getTuilesId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getTuilesId(), TuileGroupe_.tuiles, Tuile_.id));
-            }
-        }
-        return specification;
-    }*/
 
 }
