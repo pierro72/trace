@@ -4,15 +4,13 @@ import com.ex.trace.domaine.Commentaire;
 import com.ex.trace.domaine.Trace;
 import com.ex.trace.service.CommentaireService;
 import com.ex.trace.service.TraceService;
-import com.ex.trace.service.dto.CommentaireDTO;
-import com.ex.trace.service.dto.TraceDTO;
-import com.ex.trace.service.mapper.CommentaireMapper;
-import com.ex.trace.service.mapper.TraceMapperComplet;
+import com.ex.trace.service.dto.admin.CommentaireDTO;
+import com.ex.trace.service.dto.admin.TraceDTO;
+import com.ex.trace.service.mapper.admin.CommentaireAdminMapper;
+import com.ex.trace.service.mapper.admin.TraceAdminMapper;
 import com.ex.trace.util.HeaderUtil;
 import com.ex.trace.util.PaginationUtil;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -39,16 +37,16 @@ public class AdminController {
 
     private final TraceService traceService;
 
-    private final TraceMapperComplet traceMapperComplet;
+    private final TraceAdminMapper traceMapper;
 
     private final CommentaireService commentaireService;
 
-    private final CommentaireMapper commentaireMapper;
+    private final CommentaireAdminMapper commentaireMapper;
 
 
-    public AdminController( TraceService traceService, TraceMapperComplet traceMapperComplet ,CommentaireService commentaireService , CommentaireMapper commentaireMapper) {
+    public AdminController(TraceService traceService, TraceAdminMapper traceMapper , CommentaireService commentaireService , CommentaireAdminMapper commentaireMapper) {
         this.traceService = traceService;
-        this.traceMapperComplet = traceMapperComplet;
+        this.traceMapper = traceMapper;
         this.commentaireService = commentaireService;
         this.commentaireMapper  = commentaireMapper;
     }
@@ -62,7 +60,7 @@ public class AdminController {
     public ResponseEntity AfficherTouteTrace ( @RequestParam(value = "critere", required = false ) String criteria, Pageable pageable ) {
         log.debug("requete REST pour obtenir une liste de Trace");
         Page<Trace> traces =  traceService.afficherTout(criteria, pageable);
-        Page<TraceDTO>  page = traces.map(traceMapperComplet::toDto);
+        Page<TraceDTO>  page = traces.map(traceMapper::toDto);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/trace");
         return new ResponseEntity<>(page.getContent(), headers,  HttpStatus.OK);
     }
@@ -78,7 +76,7 @@ public class AdminController {
         log.debug("requete REST pour obtenir une Trace : {}", id);
         Trace trace = null;
         trace = traceService.afficher( id );
-        TraceDTO traceDTO =  traceMapperComplet.toDto(trace);
+        TraceDTO traceDTO =  traceMapper.toDto(trace);
         return new ResponseEntity<>(traceDTO, HttpStatus.OK);
     }
 

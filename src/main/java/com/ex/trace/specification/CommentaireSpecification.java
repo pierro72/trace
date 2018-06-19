@@ -7,68 +7,102 @@ import com.ex.trace.util.SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class CommentaireSpecification implements Specification<Commentaire> {
 
 
     private SearchCriteria criteria;
+    private Predicate predicate;
 
     public CommentaireSpecification(SearchCriteria criteria) {
-        this.criteria = criteria;
+        this.criteria   = criteria;
+        this.predicate  = null;
+
     }
 
     @Override
     public Predicate toPredicate (Root<Commentaire> root,  CriteriaQuery<?> cq, CriteriaBuilder cb) {
 
 
-        String key          = criteria.getKey();
-        String op           = criteria.getOperation();
-        Object val          = criteria.getValue();
-        Predicate predicate = null;
         Join<Commentaire, Trace> trace = root.join("trace");
 
-        //contenu
-        if (key.equalsIgnoreCase("contenu")) {
-            if (op.equalsIgnoreCase(":")) {
-                predicate =  cb.like(root.<String>get(key), "%" + val + "%");
-            }
-        }
 
-        //id
-        if (key.equalsIgnoreCase("id")) {
-            switch (op) {
-                case ">":
-                    predicate = cb.greaterThanOrEqualTo( root.<String>get(key), val.toString());
+        switch (criteria.getKey()) {
+
+            case "contenu":
+                if (criteria.getOperation().equalsIgnoreCase(":")) {
+                    predicate =  cb.like(root.<String>get(criteria.getKey()), "%" + criteria.getValue() + "%");
+                }
                 break;
-                case ":":
-                    predicate =  cb.equal( root.get(key), val);
+
+            case "id":
+                switch (criteria.getOperation()) {
+                    case ">":
+                        predicate = cb.greaterThanOrEqualTo( root.<String>get(criteria.getKey()), criteria.getValue().toString());
+                        break;
+                    case ":":
+                        predicate =  cb.equal( root.get(criteria.getKey()), criteria.getValue());
+                        break;
+                    case "<":
+                        predicate =  cb.lessThanOrEqualTo( root.<String>get(criteria.getKey()),criteria.getValue().toString());
+                        break;
+                }
                 break;
-                case "<":
-                    predicate =  cb.lessThanOrEqualTo( root.<String>get(key),val.toString());
+
+            case "traceId":
+                predicate = cb.conjunction();
+                switch (criteria.getOperation()) {
+                    case ">":
+                        predicate = cb.greaterThanOrEqualTo( trace.get("id"), criteria.getValue().toString());
+                        break;
+                    case ":":
+                        predicate =  cb.equal( trace.get("id"), criteria.getValue());
+                        break;
+                    case "<":
+                        predicate =  cb.lessThanOrEqualTo( trace.get("id"), criteria.getValue().toString());
+                        break;
+                }
                 break;
-            }
-        }
 
+            case "estDouteux":
+                if (criteria.getOperation().equalsIgnoreCase(":")) {
+                    predicate = cb.equal(root.get(criteria.getKey()), Boolean.valueOf(criteria.getValue().toString()));
+                }
+                break;
 
+            case "estVerifier":
+                if (criteria.getOperation().equalsIgnoreCase(":")) {
+                    predicate = cb.equal(root.get(criteria.getKey()), Boolean.valueOf(criteria.getValue().toString()));
+                }
+                break;
 
-        //traceId
-        if (key.equalsIgnoreCase("traceId")) {
-            predicate = cb.conjunction();
-            switch (op) {
-                case ">":
-                    predicate = cb.greaterThanOrEqualTo( trace.get("id"), val.toString());
-                    break;
-                case ":":
-                    predicate =  cb.equal( trace.get("id"), val);
-                    break;
-                case "<":
-                    predicate =  cb.lessThanOrEqualTo( trace.get("id"), val.toString());
-                    break;
-            }
+            case "date":
+                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                try {
+                    Date date = formatter.parse(criteria.getValue().toString());
+                    switch (criteria.getOperation()) {
+                        case ">":
+                            predicate =  cb.greaterThanOrEqualTo(root.<Date>get(criteria.getKey()),   date);
+                            break;
+                        case ":":
+                            predicate =  cb.equal(root.<Date>get(criteria.getKey()),   date);
+                            break;
+                        case "<":
+                            predicate =  cb.lessThanOrEqualTo(root.<Date>get(criteria.getKey()),   date);
+                            break;
+                    }
+                } catch (ParseException e) { e.printStackTrace(); }
+                break;
+
         }
 
         return  predicate;
     }
+
+
 }
 

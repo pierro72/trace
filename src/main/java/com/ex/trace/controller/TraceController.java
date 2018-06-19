@@ -3,9 +3,9 @@ package com.ex.trace.controller;
 
 import com.ex.trace.domaine.Trace;
 import com.ex.trace.service.TraceService;
-import com.ex.trace.service.dto.TraceDTO;
-import com.ex.trace.service.mapper.TraceMapper;
-import com.ex.trace.service.mapper.TraceMapperComplet;
+import com.ex.trace.service.dto.mobile.TraceDTO;
+import com.ex.trace.service.mapper.mobile.TraceVideMobileMapper;
+import com.ex.trace.service.mapper.mobile.TraceMobileMapper;
 import com.ex.trace.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,14 +32,14 @@ public class TraceController {
 
     private final TraceService traceService;
 
-    private final TraceMapperComplet traceMapperComplet;
+    private final TraceMobileMapper traceMapper;
 
-    private final TraceMapper traceMapper;
+    private final TraceVideMobileMapper traceMapperVide;
 
-    public TraceController(TraceService traceService , TraceMapper traceMapper, TraceMapperComplet traceMapperComplet) {
+    public TraceController(TraceService traceService , TraceVideMobileMapper traceMapperVide, TraceMobileMapper traceMapper) {
         this.traceService = traceService;
-        this.traceMapper        = traceMapper;
-        this.traceMapperComplet = traceMapperComplet;
+        this.traceMapperVide = traceMapperVide;
+        this.traceMapper = traceMapper;
     }
 
     /**
@@ -52,8 +52,8 @@ public class TraceController {
     @PostMapping("/trace")
     public ResponseEntity<TraceDTO> ajouterTrace ( @Valid @RequestBody TraceDTO traceDTO) throws URISyntaxException {
         log.debug("requete REST pour sauvegarder Trace : {}", traceDTO);
-        Trace trace = traceService.save( traceMapperComplet.toEntity(traceDTO) );
-        TraceDTO result = traceMapperComplet.toDto(trace);
+        Trace trace = traceService.save( traceMapper.toEntity(traceDTO) );
+        TraceDTO result = traceMapper.toDto(trace);
         return ResponseEntity.created(
                 new URI("/api/trace/" + result.getId()))
                 .headers(HeaderUtil.ajouterAlert(ENTITY_NAME, result.getId().toString()))
@@ -69,7 +69,7 @@ public class TraceController {
     public ResponseEntity< List<TraceDTO> > afficherTouteTrace ( @RequestParam double positionX , @RequestParam  double positionY ) {
         log.debug("requete REST pour obtenir une liste de Trace");
         List<Trace> traces =  traceService.afficherToutAProximite(positionX, positionY);
-        List<TraceDTO>  tracesDTO = traceMapper.toDto(traces);
+        List<TraceDTO>  tracesDTO = traceMapperVide.toDto(traces);
         return new ResponseEntity<>(tracesDTO, HttpStatus.OK);
 
     }
@@ -85,7 +85,7 @@ public class TraceController {
     public ResponseEntity<TraceDTO> getTrace(@PathVariable Long id, @RequestParam float positionX, @RequestParam float positionY ) {
         log.debug("requete REST to get Trace : {}", id);
         Trace trace = traceService.afficherAProximite(id, positionX, positionY);
-        TraceDTO traceDTO =  traceMapperComplet.toDto(trace);
+        TraceDTO traceDTO =  traceMapper.toDto(trace);
         return new ResponseEntity<>(traceDTO, HttpStatus.OK);
     }
 

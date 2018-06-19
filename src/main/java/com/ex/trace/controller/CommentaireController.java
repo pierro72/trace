@@ -2,8 +2,8 @@ package com.ex.trace.controller;
 
 import com.ex.trace.domaine.Commentaire;
 import com.ex.trace.service.CommentaireService;
-import com.ex.trace.service.dto.CommentaireDTO;
-import com.ex.trace.service.mapper.CommentaireMapper;
+import com.ex.trace.service.dto.mobile.CommentaireDTO;
+import com.ex.trace.service.mapper.mobile.CommentaireMobileMapper;
 import com.ex.trace.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +30,9 @@ public class CommentaireController {
 
     private final CommentaireService commentaireService;
 
-    private final CommentaireMapper commentaireMapper;
+    private final CommentaireMobileMapper commentaireMapper;
 
-    public CommentaireController( CommentaireService commentaireService , CommentaireMapper commentaireMapper) {
+    public CommentaireController( CommentaireService commentaireService , CommentaireMobileMapper commentaireMapper) {
         this.commentaireService = commentaireService;
         this.commentaireMapper  = commentaireMapper;
     }

@@ -1,9 +1,11 @@
-package com.ex.trace.service.dto;
+package com.ex.trace.service.dto.mobile;
 import com.ex.trace.TraceType;
+import com.ex.trace.service.dto.admin.CommentaireDTO;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +24,11 @@ public class TraceDTO {
 
     @NotNull
     private TraceType traceType;
+
+    private Date date;
+
+    private int vue;
+
 
     private Set<CommentaireDTO> commentaires = new HashSet<>();
 
@@ -71,5 +78,21 @@ public class TraceDTO {
 
     public void setCommentaires(Set<CommentaireDTO> commentaires) {
         this.commentaires = commentaires;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public int getVue() {
+        return vue;
+    }
+
+    public void setVue(int vue) {
+        this.vue = vue;
     }
 }

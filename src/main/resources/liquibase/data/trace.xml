@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
 
-    <changeSet author="pyc" id="trace-demo">
+<!--    <changeSet author="pyc" id="trace-demo">
         <comment>insert queries</comment>
         <sql dbms="postgresql"
              splitStatements="true"
@@ -11,27 +11,153 @@
             INSERT INTO trace ( contenu, positionX, positionY, trace_type) VALUES ( 'x', '47.995014', '0.191129', '1');
 
         </sql>
-    </changeSet>
+    </changeSet>-->
 
-    <changeSet author="pyc" id="sqlFile-trace">
+    <changeSet author="pyc" id="sqlFile-trace-01">
         <sqlFile dbms="postgresql"
                  encoding="utf8"
                  endDelimiter="\nGO"
-                 path="trace.sql"
+                 path="trace-01.sql"
                  relativeToChangelogFile="true"
                  splitStatements="true"
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet author="pyc" id="sqlFile-commentaire">
+    <changeSet author="pyc" id="sqlFile-trace-02">
         <sqlFile dbms="postgresql"
                  encoding="utf8"
                  endDelimiter="\nGO"
-                 path="commentaire.sql"
+                 path="trace-02.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+    <changeSet author="pyc" id="sqlFile-trace-03">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="trace-03.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+    <changeSet author="pyc" id="sqlFile-trace-04">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="trace-04.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+    <changeSet author="pyc" id="sqlFile-trace-05">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="trace-05.sql"
                  relativeToChangelogFile="true"
                  splitStatements="true"
                  stripComments="true"/>
     </changeSet>
 
+    <changeSet author="pyc" id="sqlFile-commentaire-01">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="commentaire-01.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="pyc" id="sqlFile-commentaire-02">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="commentaire-02.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="pyc" id="sqlFile-commentaire-03">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="commentaire-03.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="pyc" id="sqlFile-commentaire-04">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="commentaire-04.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="pyc" id="sqlFile-commentaire-05">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="commentaire-05.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="pyc" id="sqlFile-commentaire-06">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="commentaire-06.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="pyc" id="sqlFile-commentaire-07">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="commentaire-07.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="pyc" id="sqlFile-commentaire-08">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="commentaire-08.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="pyc" id="sqlFile-commentaire-09">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="commentaire-09.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="pyc" id="sqlFile-commentaire-10">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="commentaire-10.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
 </databaseChangeLog>
 

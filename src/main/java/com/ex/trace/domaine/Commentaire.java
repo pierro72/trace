@@ -21,6 +21,18 @@ public class Commentaire {
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(nullable = false)
     private Trace trace;
 
+    @PrePersist
+    protected void onCreate() {
+        date = new Date();
+    }
+
+    @NotNull
+    private boolean     estDouteux;
+
+    @NotNull
+    private boolean     estVerifier;
+
+
     public Long getId() {
         return id;
     }
@@ -51,5 +63,21 @@ public class Commentaire {
 
     public void setTrace(Trace trace) {
         this.trace = trace;
+    }
+
+    public boolean isEstDouteux() {
+        return estDouteux;
+    }
+
+    public void setEstDouteux(boolean estDouteux) {
+        this.estDouteux = estDouteux;
+    }
+
+    public boolean isEstVerifier() {
+        return estVerifier;
+    }
+
+    public void setEstVerifier(boolean estVerifier) {
+        this.estVerifier = estVerifier;
     }
 }

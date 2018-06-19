@@ -1,4 +1,4 @@
-package com.ex.trace.service.dto;
+package com.ex.trace.service.dto.admin;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;

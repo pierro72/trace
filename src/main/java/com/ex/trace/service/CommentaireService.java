@@ -6,7 +6,6 @@ import com.ex.trace.domaine.Trace;
 import com.ex.trace.exception.ResourceNotFoundException;
 import com.ex.trace.exception.TraceNotProxiException;
 import com.ex.trace.repository.CommentaireRepository;
-import com.ex.trace.service.mapper.CommentaireMapper;
 import com.ex.trace.specification.CommentaireSpecification;
 import com.ex.trace.util.SearchCriteria;
 import org.slf4j.Logger;

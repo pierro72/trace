@@ -1,25 +1,18 @@
-package com.ex.trace.domaine;
-
-import com.ex.trace.PaysType;
+package com.ex.trace.service.dto.admin;
 import com.ex.trace.TraceType;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import javax.persistence.*;
+
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
-import java.util.regex.Pattern;
 
-@Entity @Cacheable @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Trace {
+public class TraceDTO {
 
-    @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private Long        id;
+    private Long id;
 
-    @Size   (max = 1024) @Column (length = 1024)  @NotNull
+    @Size(max = 1024) @Column(length = 1024)  @NotNull
     private String      contenu;
 
     @NotNull
@@ -28,8 +21,10 @@ public class Trace {
     @NotNull
     private double      positionY;
 
+    @NotNull
+    private TraceType   traceType;
 
-    @Temporal(TemporalType.DATE)
+    @NotNull
     private Date        date;
 
     @NotNull
@@ -39,26 +34,10 @@ public class Trace {
     private boolean     estVerifier;
 
     @NotNull
-    private String      codePays;
+    private String     codePays;
 
-    @NotNull
-    private TraceType   traceType;
+    private Set<CommentaireDTO> commentaires = new HashSet<>();
 
-    @NotNull
-    private int         vue;
-
-
-    @OneToMany(mappedBy = "trace")
-    private Set<Commentaire> commentaires = new HashSet<>();
-
-    @PrePersist
-    private void onCreate() {
-        String[] countryCodes = Locale.getISOCountries();
-        date        = new Date();
-        estVerifier = false;
-        estDouteux  = Pattern.matches("fuck", contenu);
-        vue         = 0;
-    }
 
 
     public Long getId() {
@@ -101,28 +80,20 @@ public class Trace {
         this.traceType = traceType;
     }
 
+    public Set<CommentaireDTO> getCommentaires() {
+        return commentaires;
+    }
+
+    public void setCommentaires(Set<CommentaireDTO> commentaires) {
+        this.commentaires = commentaires;
+    }
+
     public Date getDate() {
         return date;
     }
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public Set<Commentaire> getCommentaires() {
-        return commentaires;
-    }
-
-    public void setCommentaires(Set<Commentaire> commentaires) {
-        this.commentaires = commentaires;
-    }
-
-    public String getCodePays() {
-        return codePays;
-    }
-
-    public void setCodePays(String codePays) {
-        this.codePays = codePays;
     }
 
     public boolean isEstDouteux() {
@@ -133,7 +104,6 @@ public class Trace {
         this.estDouteux = estDouteux;
     }
 
-
     public boolean isEstVerifier() {
         return estVerifier;
     }
@@ -142,11 +112,12 @@ public class Trace {
         this.estVerifier = estVerifier;
     }
 
-    public int getVue() {
-        return vue;
+
+    public String getCodePays() {
+        return codePays;
     }
 
-    public void setVue(int vue) {
-        this.vue = vue;
+    public void setCodePays(String codePays) {
+        this.codePays = codePays;
     }
 }
