@@ -1,65 +1,91 @@
 package com.ex.trace.config;
 
 
+import com.ex.trace.security.AppAuthProvider;
+import com.ex.trace.security.UtilisateurService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
+    @Autowired
+    UtilisateurService userDetailsService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring()
-            .antMatchers(HttpMethod.OPTIONS, "/**")
-            .antMatchers("/app/**/*.{js,html}")
-            .antMatchers("/i18n/**")
-            .antMatchers("/content/**")
-            .antMatchers("/**")
-            .antMatchers("/test/**");
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService);
     }
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/", "/home","/spring-security-rest/api/v2/api-docs").permitAll()
-                .anyRequest().authenticated()
+        http.csrf()
+                .disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(new Http401AuthenticationEntryPoint("App header"))
                 .and()
+                .authenticationProvider(getProvider())
                 .formLogin()
-                .loginPage("/login")
-                .permitAll()
+                .loginProcessingUrl("/login")
+                .successHandler(new AuthentificationLoginSuccessHandler())
+                .failureHandler(new SimpleUrlAuthenticationFailureHandler())
                 .and()
                 .logout()
-                .permitAll();
+                .logoutUrl("/logout")
+                .logoutSuccessHandler(new AuthentificationLogoutSuccessHandler())
+                .invalidateHttpSession(true)
+                .and()
+                .authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/logout").permitAll()
+                .antMatchers("/user").authenticated()
+                .anyRequest().permitAll();
     }
-
-/*    @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("user")
-                        .roles("USER")
-                        .build();
-
-        return new InMemoryUserDetailsManager(user);
-    }*/
+    private class AuthentificationLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request,
+                                            HttpServletResponse response, Authentication authentication)
+                throws IOException, ServletException {
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
+    }
+    private class AuthentificationLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
+        @Override
+        public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
+                                    Authentication authentication) throws IOException, ServletException {
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
+    }
+    @Bean
+    public AuthenticationProvider getProvider() {
+        AppAuthProvider provider = new AppAuthProvider();
+        provider.setUserDetailsService(userDetailsService);
+        return provider;
+    }
 
 }

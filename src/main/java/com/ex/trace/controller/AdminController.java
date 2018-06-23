@@ -133,4 +133,15 @@ public class AdminController {
         traceService.supprimer(id);
         return ResponseEntity.ok().headers(HeaderUtil.supprimerAlert(ENTITY_NAME, id.toString())).build();
     }
+
+
+    @PatchMapping("/trace/{id}")
+    public ResponseEntity<TraceDTO> ValiderTrace ( @PathVariable Long id, @RequestParam boolean estVerifier) {
+        log.debug("requete REST pour valider une Trace : {}", id);
+        Trace trace = null;
+        trace = traceService.validerTrace(id, estVerifier );
+        TraceDTO traceDTO =  traceMapper.toDto(trace);
+        return new ResponseEntity<>(traceDTO, HttpStatus.OK);
+    }
+
 }

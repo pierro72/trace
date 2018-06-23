@@ -17,6 +17,12 @@ public class CommentaireDTO {
     @NotNull
     private Long traceId;
 
+    @NotNull
+    private boolean     estDouteux;
+
+    @NotNull
+    private boolean     estVerifier;
+
     public Long getId() {
         return id;
     }
@@ -47,5 +53,21 @@ public class CommentaireDTO {
 
     public void setTraceId(Long traceId) {
         this.traceId = traceId;
+    }
+
+    public boolean isEstDouteux() {
+        return estDouteux;
+    }
+
+    public void setEstDouteux(boolean estDouteux) {
+        this.estDouteux = estDouteux;
+    }
+
+    public boolean isEstVerifier() {
+        return estVerifier;
+    }
+
+    public void setEstVerifier(boolean estVerifier) {
+        this.estVerifier = estVerifier;
     }
 }

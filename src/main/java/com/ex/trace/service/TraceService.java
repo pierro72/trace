@@ -43,6 +43,14 @@ public class TraceService {
         this.traceRepository    = traceRepository;
     }
 
+
+    public Trace validerTrace(Long id, boolean verifier){
+        Trace trace = afficher( id);
+        trace.setEstVerifier( verifier);
+        traceRepository.save(trace);
+        return trace;
+    }
+
     /**
      * Save a trace.
      *
@@ -70,7 +78,7 @@ public class TraceService {
         return traceRepository.findProxiTrace( longitudeMax, longitudeMin, latitudeMax, latitudeMin );
     }
 
-    /*FIXME: Peagable*/
+
     /**
      * Get all the trace.
      *
@@ -114,6 +122,8 @@ public class TraceService {
         }
         return trace;
     }
+
+
 
     /**
      * Delete the commentaire by id.
