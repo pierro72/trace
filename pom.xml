@@ -22,7 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<postgreSQL.version>9.1-901-1.jdbc4</postgreSQL.version>
+		<postgreSQL.version>42.2.2</postgreSQL.version>
 		<org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
 	</properties>
 
@@ -100,10 +100,16 @@
 		</dependency>
 
 		<!--postgresSQL-->
-		<dependency>
+<!--		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>${postgreSQL.version}</version>
+		</dependency>-->
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.2</version>
 		</dependency>
 
 
@@ -147,9 +153,14 @@
 			<artifactId>swagger-annotations</artifactId>
 			<version>1.5.18</version>
 		</dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.0</version>
+        </dependency>
 
 
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>

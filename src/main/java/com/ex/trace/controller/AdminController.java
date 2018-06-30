@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +30,7 @@ import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
  */
 @RestController
 @RequestMapping("/api/admin")
-
+@Secured(value = {"ADMIN"})
 @Api(value = "/api/admin", description = "Operations pour consulter/supprimer toutes les traces et commentaires")
 public class AdminController {
 
