@@ -22,8 +22,8 @@ public class UtilisateurInscriptionDTO {
     @Size(min = 1, max = 50)
     private String username;
 
-/*    @Email @ValidEmail*/
-    @NotNull @NotEmpty
+    @ValidEmail
+    @NotNull
     private String email;
 
     @Column( length = 100) @NotNull @Size(min = 4, max = 100)

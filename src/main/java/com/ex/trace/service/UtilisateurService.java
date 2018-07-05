@@ -50,7 +50,6 @@ public class UtilisateurService implements UserDetailsService {
         return result;
     }
 
-
     private boolean emailExist(String email) {
         Utilisateur utlisateur = utilisateurRepository.findOneByEmail(email);
         if (utlisateur != null) {
@@ -59,19 +58,6 @@ public class UtilisateurService implements UserDetailsService {
         return false;
     }
 
-/*    private Collection<? extends GrantedAuthority> getAuthorities(
-            Collection<Role> roles) {
-        List<GrantedAuthority> authorities
-                = new ArrayList<>();
-        for (Role role: roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-            role.getPrivileges().stream()
-                    .map(p -> new SimpleGrantedAuthority(p.getName()))
-                    .forEach(authorities::add);
-        }
-
-        return authorities;
-    }*/
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

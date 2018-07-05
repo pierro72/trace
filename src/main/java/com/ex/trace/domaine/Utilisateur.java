@@ -38,7 +38,7 @@ public class Utilisateur {
     @NotNull
     private Date lastPasswordResetDate;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name                = "utilisateur_authority",
             joinColumns         = {@JoinColumn( name = "utilisateur_id", referencedColumnName = "id")},
