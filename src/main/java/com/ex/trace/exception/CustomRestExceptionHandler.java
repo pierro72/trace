@@ -1,4 +1,4 @@
-package com.ex.trace.controller;
+package com.ex.trace.exception;
 
 import com.ex.trace.ApiError;
 import com.ex.trace.exception.ResourceNotFoundException;

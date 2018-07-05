@@ -1,5 +1,6 @@
-package com.ex.trace.controller.rest;
+package com.ex.trace.controller.exemple;
 
+import com.ex.trace.controller.exemple.Person;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

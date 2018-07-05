@@ -2,7 +2,7 @@ package com.ex.trace.controller;
 
 import com.codahale.metrics.annotation.Timed;
 import com.ex.trace.repository.UtilisateurRepository;
-import com.ex.trace.service.dto.UtilisateurDTO;
+import com.ex.trace.service.dto.mobile.UtilisateurInscriptionDTO;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.SecurityUtils;

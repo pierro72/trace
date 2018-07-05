@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -49,6 +50,7 @@ public class TraceController {
      * @return  ResponseEntity avec status 201 (Creér) et avec le trace dans le body, ou status 400 (Bad Request) si le trace a déja un ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/trace")
     public ResponseEntity<TraceDTO> ajouterTrace ( @Valid @RequestBody TraceDTO traceDTO) throws URISyntaxException {
         log.debug("requete REST pour sauvegarder Trace : {}", traceDTO);
@@ -65,6 +67,7 @@ public class TraceController {
      *
      * @return ResponseEntity avec status 200 (OK) et la liste des trace dans le body
      */
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/trace")
     public ResponseEntity< List<TraceDTO> > afficherTouteTrace ( @RequestParam double positionX , @RequestParam  double positionY ) {
         log.debug("requete REST pour obtenir une liste de Trace");
@@ -80,7 +83,7 @@ public class TraceController {
      * @param id l'id du trace à retourner
      * @return  ResponseEntity avec status 200 (OK) et avec le trace dans le body, ou status 404 (Not Found)
      */
-
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/trace/{id}")
     public ResponseEntity<TraceDTO> getTrace(@PathVariable Long id, @RequestParam float positionX, @RequestParam float positionY ) {
         log.debug("requete REST to get Trace : {}", id);

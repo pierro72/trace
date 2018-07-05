@@ -3,7 +3,7 @@ package com.ex.trace.config;
 import com.ex.trace.security.JwtAuthenticationEntryPoint;
 import com.ex.trace.security.JwtAuthorizationTokenFilter;
 import com.ex.trace.security.JwtTokenUtil;
-import com.ex.trace.service.security.JwtUserDetailsService;
+import com.ex.trace.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private JwtUserDetailsService jwtUserDetailsService;
+    private UtilisateurService utilisateurService;
 
     @Value("${jwt.header}")
     private String tokenHeader;
@@ -44,8 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(jwtUserDetailsService)
-                .passwordEncoder(passwordEncoderBean());
+            .userDetailsService(utilisateurService)
+            .passwordEncoder(passwordEncoderBean());
     }
 
     @Bean
@@ -64,21 +64,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 // we don't need CSRF because our token is invulnerable
                 .csrf().disable()
-
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-
                 // don't create session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-
                 .authorizeRequests()
-
                 // Un-secure H2 Database
                 .antMatchers("/h2-console/**/**").permitAll()
-
                 .antMatchers("/auth/**").permitAll()
+                .antMatchers("/inscription/**").permitAll()
                 .anyRequest().authenticated();
 
-        // Custom JWT based security filter
+        // Custom JWT based exemple filter
         JwtAuthorizationTokenFilter authenticationTokenFilter = new JwtAuthorizationTokenFilter(userDetailsService(), jwtTokenUtil, tokenHeader);
         httpSecurity
                 .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
@@ -99,7 +95,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         HttpMethod.POST,
                         authenticationPath
                 )
-
                 // allow anonymous resource requests
                 .and()
                 .ignoring()
@@ -115,11 +110,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-resources",
                         "/swagger-resources/**",
                         "/configuration/ui",
-                        "/configuration/security",
+                        "/configuration/exemple",
                         "/swagger-ui.html"
-
                 )
-
                 // Un-secure H2 Database (for testing purposes, H2 console shouldn't be unprotected in production)
                 .and()
                 .ignoring()

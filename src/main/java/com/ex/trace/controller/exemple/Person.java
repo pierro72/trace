@@ -1,4 +1,4 @@
-package com.ex.trace.controller.rest;
+package com.ex.trace.controller.exemple;
 
 /**
  * Created by stephan on 11.03.16.

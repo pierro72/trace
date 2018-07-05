@@ -3,8 +3,11 @@ package com.ex.trace.domaine;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 @Entity
 public class Utilisateur {
@@ -26,22 +29,10 @@ public class Utilisateur {
     @Column( length = 50)
     @NotNull
     @Size(min = 4, max = 50)
-    private String firstname;
-
-    @Column( length = 50)
-    @NotNull
-    @Size(min = 4, max = 50)
-    private String lastname;
-
-    @Column( length = 50)
-    @NotNull
-    @Size(min = 4, max = 50)
     private String email;
-
 
     @NotNull
     private Boolean enabled;
-
 
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
@@ -53,6 +44,19 @@ public class Utilisateur {
             joinColumns         = {@JoinColumn( name = "utilisateur_id", referencedColumnName = "id")},
             inverseJoinColumns  = {@JoinColumn( name = "authority_id", referencedColumnName = "id")})
     private List<Authority> authorities;
+
+
+    @PrePersist
+    private void onCreate() {
+        enabled                     = true;
+        lastPasswordResetDate       = new Date();
+    }
+    public void grantRole(Authority authority) {
+        if (authorities == null) {
+            authorities = new ArrayList<>();
+        }
+        authorities.add(authority);
+    }
 
     public Long getId() {
         return id;
@@ -76,22 +80,6 @@ public class Utilisateur {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
     }
 
     public String getEmail() {

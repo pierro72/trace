@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,11 +26,8 @@ import java.util.List;
 public class CommentaireController {
 
     private final Logger log = LoggerFactory.getLogger(CommentaireController.class);
-
     private static final String ENTITY_NAME = "commentaire";
-
     private final CommentaireService commentaireService;
-
     private final CommentaireMobileMapper commentaireMapper;
 
     public CommentaireController( CommentaireService commentaireService , CommentaireMobileMapper commentaireMapper) {
@@ -37,6 +35,7 @@ public class CommentaireController {
         this.commentaireMapper  = commentaireMapper;
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{traceId}/commentaire")
     public ResponseEntity< List<CommentaireDTO>> lireCommentaireParTrace ( @PathVariable Long traceId, @RequestParam double positionX, @RequestParam double positionY ) {
         log.debug("requete REST pour obtenir une liste de Commentaire");
@@ -53,6 +52,7 @@ public class CommentaireController {
      * @return  ResponseEntity avec status 201 (Creér) et avec le commentaire dans le body, ou status 400 (Bad Request) si le commentaire a déja un ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/commentaire")
     public ResponseEntity<CommentaireDTO> ajouterCommentaire ( @Valid @RequestBody CommentaireDTO commentaireDTO, @RequestParam double positionX, @RequestParam double positionY) throws URISyntaxException {
         log.debug("requete REST pour sauvegarder Commentaire : {}", commentaireDTO);

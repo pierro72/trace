@@ -5,20 +5,19 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import com.ex.trace.domaine.Authority;
 import com.ex.trace.domaine.Utilisateur;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class JwtUserFactory {
+public final class JwtUtilisateurFactory {
 
-    private JwtUserFactory() {
+    private JwtUtilisateurFactory() {
     }
 
-    public static JwtUser create(Utilisateur utilisateur) {
-        return new JwtUser(
+    public static JwtUtilisateur create(Utilisateur utilisateur) {
+        return new JwtUtilisateur(
                 utilisateur.getId(),
                 utilisateur.getUsername(),
-                utilisateur.getFirstname(),
-                utilisateur.getLastname(),
                 utilisateur.getEmail(),
                 utilisateur.getPassword(),
                 mapToGrantedAuthorities(utilisateur.getAuthorities()),
@@ -27,9 +26,9 @@ public final class JwtUserFactory {
         );
     }
 
-    private static List<GrantedAuthority> mapToGrantedAuthorities(List<Authority> authorities) {
+    private static Collection<? extends GrantedAuthority> mapToGrantedAuthorities(List<Authority> authorities) {
         return authorities.stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.getName().name()))
+                .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
                 .collect(Collectors.toList());
     }
 }

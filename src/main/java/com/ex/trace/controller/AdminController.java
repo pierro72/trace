@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +31,6 @@ import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
  */
 @RestController
 @RequestMapping("/api/admin")
-@Secured(value = {"ADMIN"})
 @Api(value = "/api/admin", description = "Operations pour consulter/supprimer toutes les traces et commentaires")
 public class AdminController {
 
@@ -57,6 +57,7 @@ public class AdminController {
      *
      * @return ResponseEntity avec status 200 (OK) et la liste des trace dans le body
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/trace")
     public ResponseEntity AfficherTouteTrace ( @RequestParam(value = "critere", required = false ) String criteria, Pageable pageable ) {
         log.debug("requete REST pour obtenir une liste de Trace");
@@ -72,6 +73,7 @@ public class AdminController {
      * @param id l'id de la trace à retourner
      * @return  ResponseEntity avec status 200 (OK) et avec la trace dans le body, ou status 404 (Not Found)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/trace/{id}")
     public ResponseEntity<TraceDTO> lireTrace ( @PathVariable Long id) {
         log.debug("requete REST pour obtenir une Trace : {}", id);
@@ -86,6 +88,7 @@ public class AdminController {
      *
      * @return ResponseEntity avec status 200 (OK) et la liste des commentaire dans le body
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/commentaire")
     public ResponseEntity< List<CommentaireDTO> >  afficherToutCommentaire ( @RequestParam(value = "critere", required = false ) String criteria, Pageable pageable ) {
         log.debug("requete REST pour obtenir une liste de Commentaire avec criteria: {}", criteria);
@@ -101,6 +104,7 @@ public class AdminController {
      * @param id l'id du commentaire à retourner
      * @return  ResponseEntity avec status 200 (OK) et avec le commentaire dans le body, ou status 404 (Not Found)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/commentaire/{id}")
     public ResponseEntity<CommentaireDTO> lireCommentaire ( @PathVariable Long id) {
         log.debug("requete REST pour obtenir Commentaire : {}", id);
@@ -115,6 +119,7 @@ public class AdminController {
      * @param id l'id du commentaire à supprimer
      * @return ResponseEntity avec status 200 (OK)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/commentaire/{id}")
     public ResponseEntity<Void> supprimerCommentaire ( @PathVariable Long id) {
         log.debug("requete REST to supprimer commentaire : {}", id);
@@ -128,6 +133,7 @@ public class AdminController {
      * @param id l'id de la trace  à supprimer
      * @return ResponseEntity avec status 200 (OK)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/trace/{id}")
     public ResponseEntity<Void> supprimerTrace( @PathVariable Long id) {
         log.debug("requete REST to supprimer trace : {}", id);
@@ -135,7 +141,7 @@ public class AdminController {
         return ResponseEntity.ok().headers(HeaderUtil.supprimerAlert(ENTITY_NAME, id.toString())).build();
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/trace/{id}")
     public ResponseEntity<TraceDTO> ValiderTrace ( @PathVariable Long id, @RequestParam boolean estVerifier) {
         log.debug("requete REST pour valider une Trace : {}", id);

@@ -1,7 +1,7 @@
-package com.ex.trace.controller.security;
+package com.ex.trace.controller.exemple;
 
 import com.ex.trace.security.JwtTokenUtil;
-import com.ex.trace.security.JwtUser;
+import com.ex.trace.security.JwtUtilisateur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,14 +22,14 @@ public class UserRestController {
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    @Qualifier("jwtUserDetailsService")
+    @Qualifier("utilisateurService")
     private UserDetailsService userDetailsService;
 
     @RequestMapping(value = "user", method = RequestMethod.GET)
-    public JwtUser getAuthenticatedUser(HttpServletRequest request) {
+    public JwtUtilisateur getAuthenticatedUser(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader).substring(7);
         String username = jwtTokenUtil.getUsernameFromToken(token);
-        JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+        JwtUtilisateur user = (JwtUtilisateur) userDetailsService.loadUserByUsername(username);
         return user;
     }
 

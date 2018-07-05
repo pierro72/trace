@@ -1,4 +1,4 @@
-package com.ex.trace.controller.security;
+package com.ex.trace.controller.exemple;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

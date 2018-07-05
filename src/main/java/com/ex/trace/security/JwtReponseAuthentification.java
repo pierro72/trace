@@ -1,17 +1,17 @@
-package com.ex.trace.service.security;
+package com.ex.trace.security;
 
 import java.io.Serializable;
 
 /**
  * Created by stephan on 20.03.16.
  */
-public class JwtAuthenticationResponse implements Serializable {
+public class JwtReponseAuthentification implements Serializable {
 
     private static final long serialVersionUID = 1250166508152483573L;
 
     private final String token;
 
-    public JwtAuthenticationResponse(String token) {
+    public JwtReponseAuthentification(String token) {
         this.token = token;
     }
 
