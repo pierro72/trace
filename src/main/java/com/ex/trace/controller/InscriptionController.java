@@ -1,6 +1,6 @@
 package com.ex.trace.controller;
 
-import com.ex.trace.domaine.Utilisateur;
+import com.ex.trace.domaine.security.Utilisateur;
 import com.ex.trace.service.UtilisateurService;
 import com.ex.trace.service.dto.mobile.UtilisateurInscriptionDTO;
 import com.ex.trace.service.mapper.UtilisateurMapper;

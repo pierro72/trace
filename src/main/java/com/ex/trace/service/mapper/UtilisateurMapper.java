@@ -1,13 +1,11 @@
 package com.ex.trace.service.mapper;
 
-import com.ex.trace.domaine.Utilisateur;
+import com.ex.trace.domaine.security.Utilisateur;
 import com.ex.trace.service.UtilisateurService;
 import com.ex.trace.service.dto.mobile.UtilisateurInscriptionDTO;
 import com.ex.trace.util.EntityMapper;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 /**

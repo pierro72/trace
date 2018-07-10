@@ -1,7 +1,7 @@
-package com.ex.trace.repository;
+package com.ex.trace.security.repository;
 
-import com.ex.trace.AuthorityType;
-import com.ex.trace.domaine.Authority;
+import com.ex.trace.domaine.security.AuthorityType;
+import com.ex.trace.domaine.security.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

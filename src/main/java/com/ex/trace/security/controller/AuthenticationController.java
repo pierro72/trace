@@ -1,4 +1,4 @@
-package com.ex.trace.controller;
+package com.ex.trace.security.controller;
 
 import com.ex.trace.exception.AuthenticationException;
 import com.ex.trace.security.JwtRequeteAuthentification;
@@ -8,16 +8,15 @@ import com.ex.trace.security.JwtReponseAuthentification;
 import com.ex.trace.service.UtilisateurService;
 import com.ex.trace.service.mapper.UtilisateurMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mobile.device.Device;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -44,18 +43,33 @@ public class AuthenticationController {
 
     }
 
+/*    @RequestMapping(value = "${jwt.route.authentication.path}", method = RequestMethod.POST)
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest, Device device) throws org.springframework.security.core.AuthenticationException {
 
-    @RequestMapping(value = "/auth", method = RequestMethod.POST)
-    public ResponseEntity<?> creerTokenAuthentification(@RequestBody JwtRequeteAuthentification requete) throws AuthenticationException {
+        final Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+        final String token = jwtTokenUtil.generateToken(userDetails, device);
+
+        // Return the token
+        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+    }*/
+
+    @RequestMapping(value = "${jwt.route.authentication.path}", method = RequestMethod.POST)
+    public ResponseEntity<?> creerTokenAuthentification(@RequestBody JwtRequeteAuthentification requete, Device device) throws AuthenticationException {
         
         this.authentifier( requete.getUsername(), requete.getPassword());
         final UserDetails userDetails   = utilisateurService.loadUserByUsername( requete.getUsername());
-        final String token              = jwtTokenUtil.generateToken( userDetails);
+        final String token              = jwtTokenUtil.generateToken( userDetails, device);
 
         return ResponseEntity.ok( new JwtReponseAuthentification(token) );
     }
 
-    @RequestMapping(value = "/refresh", method = RequestMethod.GET)
+    @RequestMapping(value = "${jwt.route.authentication.refresh}", method = RequestMethod.GET)
     public ResponseEntity<?> rafraichirEtObtenirTokenAuthentification(HttpServletRequest requete) {
         String authToken            = requete.getHeader(tokenHeader);
         final String token          = authToken.substring(7);

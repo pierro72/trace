@@ -50,7 +50,7 @@ public class CommentaireService {
      * @param commentaire the entity pour sauvegarder
      * @return the persisted entity
      */
-    public Commentaire ajouter(Commentaire commentaire, double positionX, double positionY ) throws TraceNotProxiException {
+    public Commentaire ajouter( Commentaire commentaire, double positionX, double positionY ) throws TraceNotProxiException {
         log.debug("Request pour sauvegarder Commentaire : {}", commentaire);
         if (!traceService.estLisible(positionX, positionY, commentaire.getTrace() )){
             throw new TraceNotProxiException(commentaire.getTrace().getId(), TraceNotProxiException.ERR3);

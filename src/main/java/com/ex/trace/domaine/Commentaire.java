@@ -1,10 +1,12 @@
 package com.ex.trace.domaine;
+import com.ex.trace.domaine.security.Utilisateur;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @Entity @Cacheable @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Commentaire {
@@ -31,6 +33,19 @@ public class Commentaire {
 
     @NotNull
     private boolean     estVerifier;
+
+    @NotNull
+    private int         totalLike;
+
+    //RELATION
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(nullable = false)
+    private Utilisateur autheur;
+
+    @OneToMany( mappedBy = "commentaire")
+    private List<CommentaireLike> commentaireLike;
+
+    @OneToMany( mappedBy = "commentaire")
+    private List<CommentaireSignalement> commentaireSignalement;
 
 
     public Long getId() {
@@ -79,5 +94,37 @@ public class Commentaire {
 
     public void setEstVerifier(boolean estVerifier) {
         this.estVerifier = estVerifier;
+    }
+
+    public Utilisateur getAutheur() {
+        return autheur;
+    }
+
+    public void setAutheur(Utilisateur autheur) {
+        this.autheur = autheur;
+    }
+
+    public List<CommentaireLike> getCommentaireLike() {
+        return commentaireLike;
+    }
+
+    public void setCommentaireLike(List<CommentaireLike> commentaireLike) {
+        this.commentaireLike = commentaireLike;
+    }
+
+    public List<CommentaireSignalement> getCommentaireSignalement() {
+        return commentaireSignalement;
+    }
+
+    public void setCommentaireSignalement(List<CommentaireSignalement> commentaireSignalement) {
+        this.commentaireSignalement = commentaireSignalement;
+    }
+
+    public int getTotalLike() {
+        return totalLike;
+    }
+
+    public void setTotalLike(int totalLike) {
+        this.totalLike = totalLike;
     }
 }

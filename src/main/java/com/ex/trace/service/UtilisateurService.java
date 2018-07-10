@@ -1,13 +1,12 @@
 package com.ex.trace.service;
 
-import com.ex.trace.AuthorityType;
-import com.ex.trace.domaine.Authority;
-import com.ex.trace.domaine.Utilisateur;
-import com.ex.trace.repository.AuthorityRepository;
-import com.ex.trace.repository.UtilisateurRepository;
+import com.ex.trace.domaine.security.AuthorityType;
+import com.ex.trace.domaine.security.Authority;
+import com.ex.trace.domaine.security.Utilisateur;
+import com.ex.trace.security.repository.AuthorityRepository;
+import com.ex.trace.security.repository.UtilisateurRepository;
 import com.ex.trace.security.JwtUtilisateurFactory;
 import com.ex.trace.validator.EmailExistsException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

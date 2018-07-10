@@ -34,10 +34,16 @@ public class TraceDTO {
     private boolean     estVerifier;
 
     @NotNull
-    private String     codePays;
+    private int         totalVue;
 
-    private Set<CommentaireDTO> commentaires = new HashSet<>();
+    @NotNull
+    private int         totalLike;
 
+    @NotNull
+    private String      codePays;
+
+    @NotNull
+    private Long        autheurId;
 
 
     public Long getId() {
@@ -80,14 +86,6 @@ public class TraceDTO {
         this.traceType = traceType;
     }
 
-    public Set<CommentaireDTO> getCommentaires() {
-        return commentaires;
-    }
-
-    public void setCommentaires(Set<CommentaireDTO> commentaires) {
-        this.commentaires = commentaires;
-    }
-
     public Date getDate() {
         return date;
     }
@@ -112,12 +110,35 @@ public class TraceDTO {
         this.estVerifier = estVerifier;
     }
 
-
     public String getCodePays() {
         return codePays;
     }
 
     public void setCodePays(String codePays) {
         this.codePays = codePays;
+    }
+
+    public int getTotalVue() {
+        return totalVue;
+    }
+
+    public void setTotalVue(int totalVue) {
+        this.totalVue = totalVue;
+    }
+
+    public int getTotalLike() {
+        return totalLike;
+    }
+
+    public void setTotalLike(int totalLike) {
+        this.totalLike = totalLike;
+    }
+
+    public Long getAutheurId() {
+        return autheurId;
+    }
+
+    public void setAutheurId(Long autheurId) {
+        this.autheurId = autheurId;
     }
 }

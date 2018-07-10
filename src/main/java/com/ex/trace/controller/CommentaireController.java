@@ -3,8 +3,11 @@ package com.ex.trace.controller;
 import com.ex.trace.domaine.Commentaire;
 import com.ex.trace.service.CommentaireService;
 import com.ex.trace.service.dto.mobile.CommentaireDTO;
+import com.ex.trace.service.dto.mobile.CommentairePostDTO;
+import com.ex.trace.service.mapper.mobile.CommentaireEcritureMobileMapper;
 import com.ex.trace.service.mapper.mobile.CommentaireMobileMapper;
 import com.ex.trace.util.HeaderUtil;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,17 +25,19 @@ import java.util.List;
  * REST controller for managing Commentaire.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api" )
+@Api( description = "Operations reservée aux utilisateurs pour voir/ajouter des commentaires")
 public class CommentaireController {
 
     private final Logger log = LoggerFactory.getLogger(CommentaireController.class);
     private static final String ENTITY_NAME = "commentaire";
     private final CommentaireService commentaireService;
-    private final CommentaireMobileMapper commentaireMapper;
+    private final CommentaireMobileMapper mapper;
 
-    public CommentaireController( CommentaireService commentaireService , CommentaireMobileMapper commentaireMapper) {
+    public CommentaireController(   CommentaireService commentaireService,
+                                    CommentaireMobileMapper mapper) {
         this.commentaireService = commentaireService;
-        this.commentaireMapper  = commentaireMapper;
+        this.mapper  = mapper;
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -40,7 +45,7 @@ public class CommentaireController {
     public ResponseEntity< List<CommentaireDTO>> lireCommentaireParTrace ( @PathVariable Long traceId, @RequestParam double positionX, @RequestParam double positionY ) {
         log.debug("requete REST pour obtenir une liste de Commentaire");
         List<Commentaire>  commentaires = commentaireService.LireCommentaireParTrace( traceId, positionX, positionY );
-        List<CommentaireDTO> commentairesDTO = commentaireMapper.toDto(commentaires);
+        List<CommentaireDTO> commentairesDTO = mapper.toDto(commentaires);
         return new ResponseEntity<>(commentairesDTO, HttpStatus.OK);
     }
 
@@ -54,10 +59,10 @@ public class CommentaireController {
      */
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/commentaire")
-    public ResponseEntity<CommentaireDTO> ajouterCommentaire ( @Valid @RequestBody CommentaireDTO commentaireDTO, @RequestParam double positionX, @RequestParam double positionY) throws URISyntaxException {
+    public ResponseEntity<CommentaireDTO> ajouterCommentaire (@Valid @RequestBody CommentairePostDTO commentaireDTO, @RequestParam double positionX, @RequestParam double positionY) throws URISyntaxException {
         log.debug("requete REST pour sauvegarder Commentaire : {}", commentaireDTO);
-        Commentaire commentaire = commentaireService.ajouter( commentaireMapper.toEntity(commentaireDTO), positionX, positionY);
-        CommentaireDTO result = commentaireMapper.toDto( commentaire);
+        Commentaire commentaire = commentaireService.ajouter( mapper.toEntity(commentaireDTO), positionX, positionY);
+        CommentaireDTO result = mapper.toDto( commentaire);
         return ResponseEntity.created(
             new URI("/api/commentaire/" + result.getId()))
             .headers(HeaderUtil.ajouterAlert( ENTITY_NAME, result.getId().toString()))

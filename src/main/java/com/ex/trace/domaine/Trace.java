@@ -1,16 +1,14 @@
 package com.ex.trace.domaine;
 
-import com.ex.trace.PaysType;
 import com.ex.trace.TraceType;
+import com.ex.trace.domaine.security.Utilisateur;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Entity @Cacheable @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -28,7 +26,6 @@ public class Trace {
     @NotNull
     private double      positionY;
 
-
     @Temporal(TemporalType.DATE)
     private Date        date;
 
@@ -45,11 +42,27 @@ public class Trace {
     private TraceType   traceType;
 
     @NotNull
-    private int         vue;
+    private int         totalVue;
 
+    @NotNull
+    private int         totalLike;
+
+    //RELATION
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(nullable = false)
+    private Utilisateur         autheur;
 
     @OneToMany(mappedBy = "trace")
-    private Set<Commentaire> commentaires = new HashSet<>();
+    private Set<Commentaire>    commentaires = new HashSet<>();
+
+    @OneToMany(mappedBy = "trace")
+    private List<TraceVue> traceVues;
+
+    @OneToMany(mappedBy = "trace")
+    private List<TraceLike> traceLikes;
+
+    @OneToMany(mappedBy = "trace")
+    private List<TraceSignalement> traceSignalements;
+
 
     @PrePersist
     private void onCreate() {
@@ -57,7 +70,8 @@ public class Trace {
         date        = new Date();
         estVerifier = false;
         estDouteux  = Pattern.matches("fuck", contenu);
-        vue         = 0;
+        totalVue    = 0;
+        totalLike   = 0;
     }
 
 
@@ -133,7 +147,6 @@ public class Trace {
         this.estDouteux = estDouteux;
     }
 
-
     public boolean isEstVerifier() {
         return estVerifier;
     }
@@ -142,11 +155,51 @@ public class Trace {
         this.estVerifier = estVerifier;
     }
 
-    public int getVue() {
-        return vue;
+    public int getTotalVue() {
+        return totalVue;
     }
 
-    public void setVue(int vue) {
-        this.vue = vue;
+    public void setTotalVue(int totalVue) {
+        this.totalVue = totalVue;
+    }
+
+    public Utilisateur getAutheur() {
+        return autheur;
+    }
+
+    public void setAutheur(Utilisateur autheur) {
+        this.autheur = autheur;
+    }
+
+    public List<TraceVue> getTraceVues() {
+        return traceVues;
+    }
+
+    public void setTraceVues(List<TraceVue> traceVues) {
+        this.traceVues = traceVues;
+    }
+
+    public List<TraceLike> getTraceLikes() {
+        return traceLikes;
+    }
+
+    public void setTraceLikes(List<TraceLike> traceLikes) {
+        this.traceLikes = traceLikes;
+    }
+
+    public List<TraceSignalement> getTraceSignalements() {
+        return traceSignalements;
+    }
+
+    public void setTraceSignalements(List<TraceSignalement> traceSignalements) {
+        this.traceSignalements = traceSignalements;
+    }
+
+    public int getTotalLike() {
+        return totalLike;
+    }
+
+    public void setTotalLike(int totalLike) {
+        this.totalLike = totalLike;
     }
 }

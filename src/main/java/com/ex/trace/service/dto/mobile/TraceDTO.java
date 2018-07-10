@@ -11,26 +11,32 @@ import java.util.Set;
 
 public class TraceDTO {
 
-    private Long id;
+    private Long        id;
 
     @Size(max = 1024) @Column(length = 1024)  @NotNull
-    private String contenu;
+    private String      contenu;
 
     @NotNull
-    private double positionX;
+    private double      positionX;
 
     @NotNull
-    private double positionY;
+    private double      positionY;
 
     @NotNull
-    private TraceType traceType;
+    private TraceType   traceType;
 
-    private Date date;
+    private Date        date;
 
-    private int vue;
+    private int         totalVue;
 
+    private int         totalLike;
 
-    private Set<CommentaireDTO> commentaires = new HashSet<>();
+    private boolean     autheur;
+
+    private boolean     like;
+
+    private boolean     signale;
+
 
     public Long getId() {
         return id;
@@ -72,14 +78,6 @@ public class TraceDTO {
         this.traceType = traceType;
     }
 
-    public Set<CommentaireDTO> getCommentaires() {
-        return commentaires;
-    }
-
-    public void setCommentaires(Set<CommentaireDTO> commentaires) {
-        this.commentaires = commentaires;
-    }
-
     public Date getDate() {
         return date;
     }
@@ -88,11 +86,43 @@ public class TraceDTO {
         this.date = date;
     }
 
-    public int getVue() {
-        return vue;
+    public int getTotalVue() {
+        return totalVue;
     }
 
-    public void setVue(int vue) {
-        this.vue = vue;
+    public void setTotalVue(int totalVue) {
+        this.totalVue = totalVue;
+    }
+
+    public int getTotalLike() {
+        return totalLike;
+    }
+
+    public void setTotalLike(int totalLike) {
+        this.totalLike = totalLike;
+    }
+
+    public boolean isAutheur() {
+        return autheur;
+    }
+
+    public void setAutheur(boolean autheur) {
+        this.autheur = autheur;
+    }
+
+    public boolean isLike() {
+        return like;
+    }
+
+    public void setLike(boolean like) {
+        this.like = like;
+    }
+
+    public boolean isSignale() {
+        return signale;
+    }
+
+    public void setSignale(boolean signale) {
+        this.signale = signale;
     }
 }

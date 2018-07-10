@@ -7,15 +7,24 @@ import java.util.Date;
 
 public class CommentaireDTO {
 
-    private Long id;
+    private Long    id;
 
     @Size(max = 1024) @Column(length = 1024)  @NotNull
-    private String contenu;
-
-    private Date date;
+    private String  contenu;
 
     @NotNull
-    private Long traceId;
+    private Long    traceId;
+
+    private int     totalLike;
+
+    private Date        date;
+
+    private boolean     autheur;
+
+    private boolean     like;
+
+    private boolean     signale;
+
 
     public Long getId() {
         return id;
@@ -47,5 +56,37 @@ public class CommentaireDTO {
 
     public void setTraceId(Long traceId) {
         this.traceId = traceId;
+    }
+
+    public int getTotalLike() {
+        return totalLike;
+    }
+
+    public void setTotalLike(int totalLike) {
+        this.totalLike = totalLike;
+    }
+
+    public boolean isAutheur() {
+        return autheur;
+    }
+
+    public void setAutheur(boolean autheur) {
+        this.autheur = autheur;
+    }
+
+    public boolean isLike() {
+        return like;
+    }
+
+    public void setLike(boolean like) {
+        this.like = like;
+    }
+
+    public boolean isSignale() {
+        return signale;
+    }
+
+    public void setSignale(boolean signale) {
+        this.signale = signale;
     }
 }

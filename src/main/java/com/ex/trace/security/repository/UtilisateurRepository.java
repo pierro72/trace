@@ -1,6 +1,6 @@
-package com.ex.trace.repository;
+package com.ex.trace.security.repository;
 
-import com.ex.trace.domaine.Utilisateur;
+import com.ex.trace.domaine.security.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

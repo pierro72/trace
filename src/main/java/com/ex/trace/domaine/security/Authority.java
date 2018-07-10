@@ -1,6 +1,5 @@
-package com.ex.trace.domaine;
+package com.ex.trace.domaine.security;
 
-import com.ex.trace.AuthorityType;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;

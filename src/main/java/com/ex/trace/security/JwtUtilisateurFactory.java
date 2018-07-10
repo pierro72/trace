@@ -2,8 +2,8 @@ package com.ex.trace.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import com.ex.trace.domaine.Authority;
-import com.ex.trace.domaine.Utilisateur;
+import com.ex.trace.domaine.security.Authority;
+import com.ex.trace.domaine.security.Utilisateur;
 
 import java.util.Collection;
 import java.util.List;

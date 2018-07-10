@@ -4,9 +4,11 @@ package com.ex.trace.controller;
 import com.ex.trace.domaine.Trace;
 import com.ex.trace.service.TraceService;
 import com.ex.trace.service.dto.mobile.TraceDTO;
-import com.ex.trace.service.mapper.mobile.TraceVideMobileMapper;
+import com.ex.trace.service.dto.mobile.TracePostDTO;
+import com.ex.trace.service.dto.mobile.TraceSoftDTO;
 import com.ex.trace.service.mapper.mobile.TraceMobileMapper;
 import com.ex.trace.util.HeaderUtil;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,37 +27,33 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api")
+@Api( description = "Operations reservée aux utilisateurs pour voir/ajouter des traces")
 public class TraceController {
 
     private final Logger log = LoggerFactory.getLogger(TraceController.class);
-
     private static final String ENTITY_NAME = "trace";
-
     private final TraceService traceService;
+    private final TraceMobileMapper mapper;
 
-    private final TraceMobileMapper traceMapper;
-
-    private final TraceVideMobileMapper traceMapperVide;
-
-    public TraceController(TraceService traceService , TraceVideMobileMapper traceMapperVide, TraceMobileMapper traceMapper) {
+    public TraceController( TraceService traceService , TraceMobileMapper mapper)
+    {
         this.traceService = traceService;
-        this.traceMapperVide = traceMapperVide;
-        this.traceMapper = traceMapper;
+        this.mapper = mapper;
     }
 
     /**
      * POST  /trace : Creer un nouveau trace
      *
-     * @param traceDTO : trace a créer
+     * @param tracePostDTO : trace a créer
      * @return  ResponseEntity avec status 201 (Creér) et avec le trace dans le body, ou status 400 (Bad Request) si le trace a déja un ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/trace")
-    public ResponseEntity<TraceDTO> ajouterTrace ( @Valid @RequestBody TraceDTO traceDTO) throws URISyntaxException {
-        log.debug("requete REST pour sauvegarder Trace : {}", traceDTO);
-        Trace trace = traceService.save( traceMapper.toEntity(traceDTO) );
-        TraceDTO result = traceMapper.toDto(trace);
+    public ResponseEntity<TraceDTO> ajouterTrace (@Valid @RequestBody TracePostDTO tracePostDTO) throws URISyntaxException {
+        log.debug("requete REST pour sauvegarder Trace : {}", tracePostDTO);
+        Trace trace = traceService.save( mapper.toTrace(tracePostDTO) );
+        TraceDTO result = mapper.toTraceDTO(trace);
         return ResponseEntity.created(
                 new URI("/api/trace/" + result.getId()))
                 .headers(HeaderUtil.ajouterAlert(ENTITY_NAME, result.getId().toString()))
@@ -69,11 +67,11 @@ public class TraceController {
      */
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/trace")
-    public ResponseEntity< List<TraceDTO> > afficherTouteTrace ( @RequestParam double positionX , @RequestParam  double positionY ) {
+    public ResponseEntity< List<TraceSoftDTO> > afficherTouteTrace (@RequestParam double positionX , @RequestParam  double positionY ) {
         log.debug("requete REST pour obtenir une liste de Trace");
         List<Trace> traces =  traceService.afficherToutAProximite(positionX, positionY);
-        List<TraceDTO>  tracesDTO = traceMapperVide.toDto(traces);
-        return new ResponseEntity<>(tracesDTO, HttpStatus.OK);
+        List<TraceSoftDTO> traceSoftDTO = mapper.toTraceSoftDTO(traces);
+        return new ResponseEntity<>(traceSoftDTO, HttpStatus.OK);
 
     }
 
@@ -88,7 +86,7 @@ public class TraceController {
     public ResponseEntity<TraceDTO> getTrace(@PathVariable Long id, @RequestParam float positionX, @RequestParam float positionY ) {
         log.debug("requete REST to get Trace : {}", id);
         Trace trace = traceService.afficherAProximite(id, positionX, positionY);
-        TraceDTO traceDTO =  traceMapper.toDto(trace);
+        TraceDTO traceDTO =  mapper.toTraceDTO(trace);
         return new ResponseEntity<>(traceDTO, HttpStatus.OK);
     }
 
