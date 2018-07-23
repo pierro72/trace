@@ -7,6 +7,8 @@ import com.ex.trace.security.repository.AuthorityRepository;
 import com.ex.trace.security.repository.UtilisateurRepository;
 import com.ex.trace.security.JwtUtilisateurFactory;
 import com.ex.trace.validator.EmailExistsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -67,5 +69,10 @@ public class UtilisateurService implements UserDetailsService {
         } else {
             return JwtUtilisateurFactory.create(utilisateur);
         }
+    }
+
+    public Utilisateur obtenirUtilisateurCourant(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return utilisateurRepository.findByUsername( authentication.getName());
     }
 }

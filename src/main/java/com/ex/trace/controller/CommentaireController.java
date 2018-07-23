@@ -3,13 +3,13 @@ package com.ex.trace.controller;
 import com.ex.trace.domaine.Commentaire;
 import com.ex.trace.service.CommentaireService;
 import com.ex.trace.service.dto.mobile.CommentaireDTO;
-import com.ex.trace.service.dto.mobile.CommentairePostDTO;
-import com.ex.trace.service.mapper.mobile.CommentaireEcritureMobileMapper;
+import com.ex.trace.service.dto.mobile.PostCommentaireDTO;
 import com.ex.trace.service.mapper.mobile.CommentaireMobileMapper;
 import com.ex.trace.util.HeaderUtil;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,22 +27,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/api" )
 @Api( description = "Operations reservée aux utilisateurs pour voir/ajouter des commentaires")
-public class CommentaireController {
+public class CommentaireController extends MessageController{
 
     private final Logger log = LoggerFactory.getLogger(CommentaireController.class);
     private static final String ENTITY_NAME = "commentaire";
-    private final CommentaireService commentaireService;
-    private final CommentaireMobileMapper mapper;
+    @Autowired private CommentaireService commentaireService;
+    @Autowired private CommentaireMobileMapper mapper;
 
-    public CommentaireController(   CommentaireService commentaireService,
-                                    CommentaireMobileMapper mapper) {
-        this.commentaireService = commentaireService;
-        this.mapper  = mapper;
-    }
+
+    public CommentaireController() {}
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/{traceId}/commentaire")
-    public ResponseEntity< List<CommentaireDTO>> lireCommentaireParTrace ( @PathVariable Long traceId, @RequestParam double positionX, @RequestParam double positionY ) {
+    public ResponseEntity< List<CommentaireDTO>> obtenirToutParTrace (@PathVariable Long traceId, @RequestParam double positionX, @RequestParam double positionY ) {
         log.debug("requete REST pour obtenir une liste de Commentaire");
         List<Commentaire>  commentaires = commentaireService.LireCommentaireParTrace( traceId, positionX, positionY );
         List<CommentaireDTO> commentairesDTO = mapper.toDto(commentaires);
@@ -59,7 +56,7 @@ public class CommentaireController {
      */
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/commentaire")
-    public ResponseEntity<CommentaireDTO> ajouterCommentaire (@Valid @RequestBody CommentairePostDTO commentaireDTO, @RequestParam double positionX, @RequestParam double positionY) throws URISyntaxException {
+    public ResponseEntity<CommentaireDTO> ajouter (@Valid @RequestBody PostCommentaireDTO commentaireDTO, @RequestParam double positionX, @RequestParam double positionY) throws URISyntaxException {
         log.debug("requete REST pour sauvegarder Commentaire : {}", commentaireDTO);
         Commentaire commentaire = commentaireService.ajouter( mapper.toEntity(commentaireDTO), positionX, positionY);
         CommentaireDTO result = mapper.toDto( commentaire);
@@ -69,4 +66,36 @@ public class CommentaireController {
             .body(result);
     }
 
+
+    @Override
+    @PostMapping( "/commentaire/{id}/recommandation" )
+    public ResponseEntity<Void> ajouterRecommandation(Long id, double positionX, double positionY) {
+        Commentaire commentaire = commentaireService.afficherAProximite(id, positionX, positionY);
+        commentaireService.ajouterRecommandation( commentaire);
+        return ResponseEntity.ok().headers(HeaderUtil.ajouterAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @Override
+    @DeleteMapping( "/commentaire/{id}/recommandation" )
+    public ResponseEntity<Void> supprimerRecommandation(Long id, double positionX, double positionY) {
+        Commentaire commentaire = commentaireService.afficherAProximite(id, positionX, positionY);
+        commentaireService.supprimerRecommandation( commentaire);
+        return ResponseEntity.ok().headers(HeaderUtil.supprimerAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @Override
+    @PostMapping( "/commentaire/{id}/signalement" )
+    public ResponseEntity<Void> ajouterSignalement(Long id, double positionX, double positionY) {
+        Commentaire commentaire = commentaireService.afficherAProximite(id, positionX, positionY);
+        commentaireService.ajouterSignalement( commentaire);
+        return ResponseEntity.ok().headers(HeaderUtil.ajouterAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @Override
+    @DeleteMapping( "/commentaire/{id}/signalement" )
+    public ResponseEntity<Void> supprimerSignalement(Long id, double positionX, double positionY) {
+        Commentaire commentaire = commentaireService.afficherAProximite(id, positionX, positionY);
+        commentaireService.supprimerSignalement( commentaire);
+        return ResponseEntity.ok().headers(HeaderUtil.supprimerAlert(ENTITY_NAME, id.toString())).build();
+    }
 }

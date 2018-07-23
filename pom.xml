@@ -15,7 +15,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.5.10.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 
 	<properties>
@@ -52,8 +52,6 @@
 			<artifactId>mapstruct-jdk8</artifactId>
 			<version>${mapstruct.version}</version>
 		</dependency>
-
-		<!--FIXME:-->
 
 		<!--Sping Boot-->
 		<dependency>
@@ -103,30 +101,10 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--postgresSQL-->
-<!--		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>${postgreSQL.version}</version>
-		</dependency>-->
-
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>42.2.2</version>
-		</dependency>
-
-
-		<!--MYSQL-->
-<!--		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.44</version>
-		</dependency>-->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>4.3.11.RELEASE</version>
 		</dependency>
 
 		<!--SWAGGER-->
@@ -170,11 +148,6 @@
 			<artifactId>spring-mobile-device</artifactId>
 		</dependency>
 
-		<!-- Thanks for using https://jar-download.com -->
-
-
-
-
 	</dependencies>
 
 	<build>
@@ -188,11 +161,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-<!--				<configuration>
+				<configuration>
 					<jvmArguments>
 						-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005
 					</jvmArguments>
-				</configuration>-->
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

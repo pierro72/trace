@@ -1,11 +1,11 @@
-package com.ex.trace.service.dto.admin;
+package com.ex.trace.service.dto.mobile;
 
 import javax.validation.constraints.NotNull;
 
-public class CommentaireDTO extends MessageDTO{
+public class PostCommentaireDTO extends PostMessageDTO {
 
     @NotNull
-    private Long        traceId;
+    private Long traceId;
 
     public Long getTraceId() {
         return traceId;
@@ -14,5 +14,4 @@ public class CommentaireDTO extends MessageDTO{
     public void setTraceId(Long traceId) {
         this.traceId = traceId;
     }
-
 }

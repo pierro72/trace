@@ -1,5 +1,4 @@
 package com.ex.trace.domaine;
-
 import com.ex.trace.TraceType;
 import com.ex.trace.domaine.security.Utilisateur;
 import org.hibernate.annotations.Cache;
@@ -7,18 +6,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.*;
-import java.util.regex.Pattern;
+
 
 @Entity @Cacheable @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Trace {
-
-    @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private Long        id;
-
-    @Size   (max = 1024) @Column (length = 1024)  @NotNull
-    private String      contenu;
+public class Trace  extends Message{
 
     @NotNull
     private double      positionX;
@@ -26,54 +18,52 @@ public class Trace {
     @NotNull
     private double      positionY;
 
-    @Temporal(TemporalType.DATE)
-    private Date        date;
-
-    @NotNull
-    private boolean     estDouteux;
-
-    @NotNull
-    private boolean     estVerifier;
-
     @NotNull
     private String      codePays;
 
+    @Enumerated(EnumType.ORDINAL)
     @NotNull
     private TraceType   traceType;
 
     @NotNull
     private int         totalVue;
 
-    @NotNull
-    private int         totalLike;
-
     //RELATION
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(nullable = false)
-    private Utilisateur         autheur;
-
     @OneToMany(mappedBy = "trace")
     private Set<Commentaire>    commentaires = new HashSet<>();
 
-    @OneToMany(mappedBy = "trace")
-    private List<TraceVue> traceVues;
-
-    @OneToMany(mappedBy = "trace")
-    private List<TraceLike> traceLikes;
-
-    @OneToMany(mappedBy = "trace")
-    private List<TraceSignalement> traceSignalements;
-
+    @OneToMany(mappedBy = "trace", cascade={ CascadeType.MERGE, CascadeType.PERSIST })
+    private Set<Visite>         visites = new HashSet<>();
 
     @PrePersist
     private void onCreate() {
-        String[] countryCodes = Locale.getISOCountries();
-        date        = new Date();
-        estVerifier = false;
-        estDouteux  = Pattern.matches("fuck", contenu);
         totalVue    = 0;
-        totalLike   = 0;
     }
 
+    public Trace( String contenu, Utilisateur autheur, double positionX, double positionY, String codePays, TraceType traceType ) {
+        super ( contenu, autheur);
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.codePays = codePays;
+        this.traceType = traceType;
+    }
+
+    public Trace() { }
+
+    public void ajouterVisite (Visite v){
+        if (visites == null){
+            visites = new HashSet<>();
+        }
+        visites.add(v);
+    }
+
+    public int getTotalVue() {
+        return totalVue;
+    }
+
+    public void setTotalVue(int totalVue) {
+        this.totalVue = totalVue;
+    }
 
     public Long getId() {
         return id;
@@ -81,14 +71,6 @@ public class Trace {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getContenu() {
-        return contenu;
-    }
-
-    public void setContenu(String contenu) {
-        this.contenu = contenu;
     }
 
     public double getPositionX() {
@@ -115,14 +97,6 @@ public class Trace {
         this.traceType = traceType;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public Set<Commentaire> getCommentaires() {
         return commentaires;
     }
@@ -139,67 +113,11 @@ public class Trace {
         this.codePays = codePays;
     }
 
-    public boolean isEstDouteux() {
-        return estDouteux;
+    public Set<Visite> getVisites() {
+        return visites;
     }
 
-    public void setEstDouteux(boolean estDouteux) {
-        this.estDouteux = estDouteux;
-    }
-
-    public boolean isEstVerifier() {
-        return estVerifier;
-    }
-
-    public void setEstVerifier(boolean estVerifier) {
-        this.estVerifier = estVerifier;
-    }
-
-    public int getTotalVue() {
-        return totalVue;
-    }
-
-    public void setTotalVue(int totalVue) {
-        this.totalVue = totalVue;
-    }
-
-    public Utilisateur getAutheur() {
-        return autheur;
-    }
-
-    public void setAutheur(Utilisateur autheur) {
-        this.autheur = autheur;
-    }
-
-    public List<TraceVue> getTraceVues() {
-        return traceVues;
-    }
-
-    public void setTraceVues(List<TraceVue> traceVues) {
-        this.traceVues = traceVues;
-    }
-
-    public List<TraceLike> getTraceLikes() {
-        return traceLikes;
-    }
-
-    public void setTraceLikes(List<TraceLike> traceLikes) {
-        this.traceLikes = traceLikes;
-    }
-
-    public List<TraceSignalement> getTraceSignalements() {
-        return traceSignalements;
-    }
-
-    public void setTraceSignalements(List<TraceSignalement> traceSignalements) {
-        this.traceSignalements = traceSignalements;
-    }
-
-    public int getTotalLike() {
-        return totalLike;
-    }
-
-    public void setTotalLike(int totalLike) {
-        this.totalLike = totalLike;
+    public void setVisites(Set<Visite> visites) {
+        this.visites = visites;
     }
 }

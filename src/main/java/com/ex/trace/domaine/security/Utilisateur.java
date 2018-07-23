@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Utilisateur {
@@ -45,20 +46,18 @@ public class Utilisateur {
     private List<Authority>     authorities;
 
     //RELATION
-    @OneToMany(mappedBy = "autheur")
-    private List<Trace>         traces;
+    @OneToMany(mappedBy = "autheur", fetch = FetchType.LAZY)
+    private List<Message>       messages;
 
-    @OneToMany(mappedBy = "autheur")
-    private List<Commentaire>   commentaires;
+    /*FIXME:*/
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    private Set<Visite> visites;
 
-    @OneToMany(mappedBy = "utilisateur")
-    private List<TraceVue> traceVues;
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    private List<Recommandation> recommandations;
 
-    @OneToMany(mappedBy = "utilisateur")
-    private List<TraceLike> traceLikes;
-
-    @OneToMany(mappedBy = "utilisateur")
-    private List<TraceSignalement> traceSignalements;
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    private List<Signalement> signalements;
 
     @PrePersist
     private void onCreate() {
@@ -128,43 +127,38 @@ public class Utilisateur {
         this.lastPasswordResetDate = lastPasswordResetDate;
     }
 
-    public List<Trace> getTraces() {
-        return traces;
+    public List<Message> getMessages() {
+        return messages;
     }
 
-    public void setTraces(List<Trace> traces) {
-        this.traces = traces;
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 
-    public List<Commentaire> getCommentaires() {
-        return commentaires;
+
+    public Set<Visite> getVisites() {
+        return visites;
     }
 
-    public void setCommentaires(List<Commentaire> commentaires) {
-        this.commentaires = commentaires;
+    public void setVisites(Set<Visite> visites) {
+        this.visites = visites;
     }
 
-    public List<TraceVue> getTraceVues() {
-        return traceVues;
+    public List<Recommandation> getRecommandations() {
+        return recommandations;
     }
 
-    public void setTraceVues(List<TraceVue> traceVues) {
-        this.traceVues = traceVues;
+    public void setRecommandations(List<Recommandation> recommandations) {
+        this.recommandations = recommandations;
     }
 
-    public List<TraceLike> getTraceLikes() {
-        return traceLikes;
+    public List<Signalement> getSignalements() {
+        return signalements;
     }
 
-    public void setTraceLikes(List<TraceLike> traceLikes) {
-        this.traceLikes = traceLikes;
+    public void setSignalements(List<Signalement> signalements) {
+        this.signalements = signalements;
     }
 
-    public List<TraceSignalement> getTraceSignalements() {
-        return traceSignalements;
-    }
 
-    public void setTraceSignalements(List<TraceSignalement> traceSignalements) {
-        this.traceSignalements = traceSignalements;
-    }
 }

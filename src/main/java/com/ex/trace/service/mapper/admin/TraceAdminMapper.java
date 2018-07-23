@@ -9,7 +9,7 @@ import org.mapstruct.ReportingPolicy;
 /**
  * Mapper for the entity Trace and its DTO TraceDTO.
  */
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,  uses = {CommentaireAdminMapper.class} )
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,  uses = { CommentaireAdminMapper.class} )
 public interface TraceAdminMapper extends EntityMapper<TraceDTO, Trace> {
 
     TraceDTO    toDto(Trace trace);

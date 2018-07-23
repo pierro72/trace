@@ -14,6 +14,6 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { UtilisateurService.class })
 public interface UtilisateurMapper extends EntityMapper<UtilisateurInscriptionDTO, Utilisateur> {
 
-    UtilisateurInscriptionDTO toDto(Utilisateur utilisateur);
+    UtilisateurInscriptionDTO toDto( Utilisateur utilisateur);
 
 }

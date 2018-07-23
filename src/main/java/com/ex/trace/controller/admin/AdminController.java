@@ -1,5 +1,6 @@
-package com.ex.trace.controller;
+package com.ex.trace.controller.admin;
 
+import com.ex.trace.controller.CommentaireController;
 import com.ex.trace.domaine.Commentaire;
 import com.ex.trace.domaine.Trace;
 import com.ex.trace.service.CommentaireService;
@@ -18,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,7 +61,7 @@ public class AdminController {
     @GetMapping("/trace")
     public ResponseEntity AfficherTouteTrace ( @RequestParam(value = "critere", required = false ) String criteria, Pageable pageable ) {
         log.debug("requete REST pour obtenir une liste de Trace");
-        Page<Trace> traces =  traceService.afficherTout(criteria, pageable);
+        Page<Trace> traces =  traceService.obtenirToutSansRestriction(criteria, pageable);
         Page<TraceDTO>  page = traces.map(traceMapper::toDto);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/trace");
         return new ResponseEntity<>(page.getContent(), headers,  HttpStatus.OK);
@@ -78,7 +78,7 @@ public class AdminController {
     public ResponseEntity<TraceDTO> lireTrace ( @PathVariable Long id) {
         log.debug("requete REST pour obtenir une Trace : {}", id);
         Trace trace = null;
-        trace = traceService.afficher( id );
+        trace = traceService.obtenirSansRestriction( id );
         TraceDTO traceDTO =  traceMapper.toDto(trace);
         return new ResponseEntity<>(traceDTO, HttpStatus.OK);
     }

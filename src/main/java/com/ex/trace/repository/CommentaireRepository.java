@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * Spring Data JPA repository for the Tuile entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface CommentaireRepository extends JpaRepository<Commentaire, Long>, JpaSpecificationExecutor<Commentaire> {
 

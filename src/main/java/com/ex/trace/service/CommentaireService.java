@@ -6,10 +6,12 @@ import com.ex.trace.domaine.Trace;
 import com.ex.trace.exception.ResourceNotFoundException;
 import com.ex.trace.exception.TraceNotProxiException;
 import com.ex.trace.repository.CommentaireRepository;
+import com.ex.trace.repository.TraceRepository;
 import com.ex.trace.specification.CommentaireSpecification;
 import com.ex.trace.util.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,21 +29,24 @@ import java.util.regex.Pattern;
  */
 @Service
 @Transactional
-public class CommentaireService {
+public class CommentaireService extends MessageService {
 
     private final TraceService traceService;
 
     private final Logger log = LoggerFactory.getLogger(CommentaireService.class);
 
+
+    @Autowired
+    public TraceRepository traceRepository;
+
     private final CommentaireRepository commentaireRepository;
 
 
-
-
-    public CommentaireService(CommentaireRepository commentaireRepository, TraceService traceService) {
-        this.commentaireRepository    = commentaireRepository;
-        this.traceService             = traceService;
+    public CommentaireService( CommentaireRepository commentaireRepository, TraceService traceService ) {
+        this.commentaireRepository      = commentaireRepository;
+        this.traceService               = traceService;
     }
+
 
     /**
      * Save a commentaire.
@@ -55,18 +59,20 @@ public class CommentaireService {
         if (!traceService.estLisible(positionX, positionY, commentaire.getTrace() )){
             throw new TraceNotProxiException(commentaire.getTrace().getId(), TraceNotProxiException.ERR3);
         }
-        commentaire.setDate(Calendar.getInstance().getTime());
         commentaire = commentaireRepository.save(commentaire);
         return commentaire;
     }
 
     @Transactional(readOnly = true)
     public List<Commentaire> LireCommentaireParTrace(Long idTrace, Double x, Double y) {
-        Trace trace = traceService.afficher(idTrace);
+        Trace trace = traceRepository.findOne(idTrace);
+        if ( trace == null) {
+            throw new ResourceNotFoundException( Trace.class.getSimpleName(), idTrace);
+        }
         if (!traceService.estLisible(x, y, trace )){
             throw new TraceNotProxiException( trace.getId(), TraceNotProxiException.ERR2);
         }
-        /*Trace trace = traceService.afficherAProximite(idTrace, x, y);*/
+        /*Trace trace = traceService.obtenirAvecRestrictionPosition(idTrace, x, y);*/
         List<Commentaire> commentaires = commentaireRepository.findAllByTrace(trace);
         return commentaires;
     }
@@ -106,6 +112,15 @@ public class CommentaireService {
         return commentaire;
     }
 
+    public Commentaire afficherAProximite(Long id,  double positionX, double positionY ) {
+        log.debug("Request to get Commentaire : {}", id);
+        Commentaire commentaire = this.afficher( id);
+        if ( !estLisible( positionX, positionY, commentaire) ){
+            throw new TraceNotProxiException(id, TraceNotProxiException.ERR1);
+        }
+        return commentaire;
+    }
+
 
     /**
      * Delete the commentaire by id.
@@ -133,6 +148,7 @@ public class CommentaireService {
         }
         return result;
     }
+
 
 
 }

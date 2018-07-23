@@ -1,6 +1,5 @@
 package com.ex.trace.repository;
 
-
 import com.ex.trace.domaine.Trace;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -14,7 +13,7 @@ import java.util.List;
 /**
  * Spring Data JPA repository for the Tuile entity.
  */
-@SuppressWarnings("unused") @Repository
+ @Repository
 public interface TraceRepository extends JpaRepository<Trace, Long>, JpaSpecificationExecutor<Trace> {
 
     public final static String TRACE_VISIBE = "SELECT t FROM Trace t " +
@@ -25,23 +24,10 @@ public interface TraceRepository extends JpaRepository<Trace, Long>, JpaSpecific
 
 
     @Query(TRACE_VISIBE)
-    List<Trace> findProxiTrace(@Param("longitudeMax") double longitudeMax,
-                               @Param("longitudeMin") double longitudeMin,
-                               @Param("latitudeMax") double latitudeMax,
-                               @Param("latitudeMin") double latitudeMin);
+    List<Trace> obtenirToutAvecRestrictionPosition (@Param("longitudeMax") double longitudeMax,
+                                                   @Param("longitudeMin") double longitudeMin,
+                                                   @Param("latitudeMax") double latitudeMax,
+                                                   @Param("latitudeMin") double latitudeMin);
 
 
-/*    public final static String TRACE_LISIBLE = "SELECT t FROM Trace t " +
-            "WHERE id = :id" +
-            "AND positionx <= :longitudeMax " +
-            "AND positionx >= :longitudeMin " +
-            "AND positiony <= :latitudeMax " +
-            "AND positiony >= :latitudeMin";
-
-    @Query(TRACE_LISIBLE)
-    Trace obtenirAvecId(@Param("id") long id,
-                        @Param("longitudeMax") double longitudeMax,
-                        @Param("longitudeMin") double longitudeMin,
-                        @Param("latitudeMax") double latitudeMax,
-                        @Param("latitudeMin") double latitudeMin);*/
 }

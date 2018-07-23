@@ -8,12 +8,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TraceDTO {
-
-    private Long id;
-
-    @Size(max = 1024) @Column(length = 1024)  @NotNull
-    private String      contenu;
+public class TraceDTO extends  MessageDTO {
 
     @NotNull
     private double      positionX;
@@ -25,15 +20,6 @@ public class TraceDTO {
     private TraceType   traceType;
 
     @NotNull
-    private Date        date;
-
-    @NotNull
-    private boolean     estDouteux;
-
-    @NotNull
-    private boolean     estVerifier;
-
-    @NotNull
     private int         totalVue;
 
     @NotNull
@@ -42,9 +28,6 @@ public class TraceDTO {
     @NotNull
     private String      codePays;
 
-    @NotNull
-    private Long        autheurId;
-
 
     public Long getId() {
         return id;
@@ -52,14 +35,6 @@ public class TraceDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getContenu() {
-        return contenu;
-    }
-
-    public void setContenu(String contenu) {
-        this.contenu = contenu;
     }
 
     public double getPositionX() {
@@ -86,30 +61,6 @@ public class TraceDTO {
         this.traceType = traceType;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public boolean isEstDouteux() {
-        return estDouteux;
-    }
-
-    public void setEstDouteux(boolean estDouteux) {
-        this.estDouteux = estDouteux;
-    }
-
-    public boolean isEstVerifier() {
-        return estVerifier;
-    }
-
-    public void setEstVerifier(boolean estVerifier) {
-        this.estVerifier = estVerifier;
-    }
-
     public String getCodePays() {
         return codePays;
     }
@@ -134,11 +85,4 @@ public class TraceDTO {
         this.totalLike = totalLike;
     }
 
-    public Long getAutheurId() {
-        return autheurId;
-    }
-
-    public void setAutheurId(Long autheurId) {
-        this.autheurId = autheurId;
-    }
 }

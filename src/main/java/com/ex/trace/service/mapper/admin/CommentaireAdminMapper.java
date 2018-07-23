@@ -16,11 +16,7 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { TraceService.class })
 public interface CommentaireAdminMapper extends EntityMapper<CommentaireDTO, Commentaire> {
 
-    @Mapping(source="trace.id", target="traceId")
+    @Mapping( source="trace.id", target="traceId")
     CommentaireDTO    toDto(Commentaire commentaire);
-
-    @Mapping(target = "date", ignore = true)
-    @Mapping(source = "traceId", target="trace")
-    Commentaire       toEntity(CommentaireDTO commentaireDTO);
 
 }

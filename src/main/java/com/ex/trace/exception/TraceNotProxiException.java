@@ -10,9 +10,9 @@ public class TraceNotProxiException extends RuntimeException{
 
     public final static String ERR1 = "Impossible de commenter";
 
-    public final static String ERR2 = "Impossible d'afficher les commentaires";
+    public final static String ERR2 = "Impossible d'obtenirSansRestriction les commentaires";
 
-    public final static String ERR3 = "Impossible d'afficher la trace";
+    public final static String ERR3 = "Impossible d'obtenirSansRestriction la trace";
 
     public TraceNotProxiException( long idTrace, String message){
         super("Trace "+ idTrace+ " trop éloigné. "+message);

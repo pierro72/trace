@@ -21,6 +21,15 @@ public class TraceSoftDTO {
 
     private boolean     vue;
 
+    public TraceSoftDTO(Long id, double positionX, double positionY, TraceType traceType, boolean autheur, boolean vue) {
+        this.id = id;
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.traceType = traceType;
+        this.autheur = autheur;
+        this.vue = vue;
+    }
+
     public Long getId() {
         return id;
     }
