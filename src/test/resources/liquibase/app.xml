@@ -3,151 +3,112 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
 
 
-    <changeSet author="pyc" id="sqlFile-trace-01">
+    <changeSet author="pyc" id="app">
         <sqlFile dbms="postgresql"
                  encoding="utf8"
                  endDelimiter="\nGO"
-                 path="trace-01.sql"
+                 path="data/app.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+
+    </changeSet>
+
+<!--
+    <changeSet author="pyc" id="app-utilisateur">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="data/trace_public_utilisateur.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+
+    </changeSet>
+
+    <changeSet author="pyc" id="app-authority">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="data/trace_public_authority.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+
+    </changeSet>
+
+    <changeSet author="pyc" id="app-utilisateur_authority">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="data/trace_public_utilisateur_authority.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+
+    </changeSet>
+
+    <changeSet author="pyc" id="app-message">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter="\nGO"
+                 path="data/trace_public_message.sql"
                  relativeToChangelogFile="true"
                  splitStatements="true"
                  stripComments="true"/>
     </changeSet>
 
-<!--    <changeSet author="pyc" id="sqlFile-trace-02">
+    <changeSet author="pyc" id="app-trace">
         <sqlFile dbms="postgresql"
                  encoding="utf8"
                  endDelimiter="\nGO"
-                 path="trace-02.sql"
-                 relativeToChangelogFile="true"
-                 splitStatements="true"
-                 stripComments="true"/>
-    </changeSet>
-    <changeSet author="pyc" id="sqlFile-trace-03">
-        <sqlFile dbms="postgresql"
-                 encoding="utf8"
-                 endDelimiter="\nGO"
-                 path="trace-03.sql"
-                 relativeToChangelogFile="true"
-                 splitStatements="true"
-                 stripComments="true"/>
-    </changeSet>
-    <changeSet author="pyc" id="sqlFile-trace-04">
-        <sqlFile dbms="postgresql"
-                 encoding="utf8"
-                 endDelimiter="\nGO"
-                 path="trace-04.sql"
-                 relativeToChangelogFile="true"
-                 splitStatements="true"
-                 stripComments="true"/>
-    </changeSet>
-    <changeSet author="pyc" id="sqlFile-trace-05">
-        <sqlFile dbms="postgresql"
-                 encoding="utf8"
-                 endDelimiter="\nGO"
-                 path="trace-05.sql"
+                 path="data/trace_public_trace.sql"
                  relativeToChangelogFile="true"
                  splitStatements="true"
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet author="pyc" id="sqlFile-commentaire-01">
+    <changeSet author="pyc" id="app-commentaire">
         <sqlFile dbms="postgresql"
                  encoding="utf8"
                  endDelimiter="\nGO"
-                 path="commentaire-01.sql"
+                 path="data/trace_public_commentaire.sql"
                  relativeToChangelogFile="true"
                  splitStatements="true"
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet author="pyc" id="sqlFile-commentaire-02">
+    <changeSet author="pyc" id="app-signalement">
         <sqlFile dbms="postgresql"
                  encoding="utf8"
                  endDelimiter="\nGO"
-                 path="commentaire-02.sql"
+                 path="data/trace_public_signalement.sql"
                  relativeToChangelogFile="true"
                  splitStatements="true"
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet author="pyc" id="sqlFile-commentaire-03">
+    <changeSet author="pyc" id="app-recommandation">
         <sqlFile dbms="postgresql"
                  encoding="utf8"
                  endDelimiter="\nGO"
-                 path="commentaire-03.sql"
+                 path="data/trace_public_recommandation.sql"
                  relativeToChangelogFile="true"
                  splitStatements="true"
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet author="pyc" id="sqlFile-commentaire-04">
+    <changeSet author="pyc" id="app-visite">
         <sqlFile dbms="postgresql"
                  encoding="utf8"
                  endDelimiter="\nGO"
-                 path="commentaire-04.sql"
+                 path="data/trace_public_visite.sql"
                  relativeToChangelogFile="true"
                  splitStatements="true"
                  stripComments="true"/>
     </changeSet>
+-->
 
-    <changeSet author="pyc" id="sqlFile-commentaire-05">
-        <sqlFile dbms="postgresql"
-                 encoding="utf8"
-                 endDelimiter="\nGO"
-                 path="commentaire-05.sql"
-                 relativeToChangelogFile="true"
-                 splitStatements="true"
-                 stripComments="true"/>
-    </changeSet>
 
-    <changeSet author="pyc" id="sqlFile-commentaire-06">
-        <sqlFile dbms="postgresql"
-                 encoding="utf8"
-                 endDelimiter="\nGO"
-                 path="commentaire-06.sql"
-                 relativeToChangelogFile="true"
-                 splitStatements="true"
-                 stripComments="true"/>
-    </changeSet>
-
-    <changeSet author="pyc" id="sqlFile-commentaire-07">
-        <sqlFile dbms="postgresql"
-                 encoding="utf8"
-                 endDelimiter="\nGO"
-                 path="commentaire-07.sql"
-                 relativeToChangelogFile="true"
-                 splitStatements="true"
-                 stripComments="true"/>
-    </changeSet>
-
-    <changeSet author="pyc" id="sqlFile-commentaire-08">
-        <sqlFile dbms="postgresql"
-                 encoding="utf8"
-                 endDelimiter="\nGO"
-                 path="commentaire-08.sql"
-                 relativeToChangelogFile="true"
-                 splitStatements="true"
-                 stripComments="true"/>
-    </changeSet>
-
-    <changeSet author="pyc" id="sqlFile-commentaire-09">
-        <sqlFile dbms="postgresql"
-                 encoding="utf8"
-                 endDelimiter="\nGO"
-                 path="commentaire-09.sql"
-                 relativeToChangelogFile="true"
-                 splitStatements="true"
-                 stripComments="true"/>
-    </changeSet>
-
-    <changeSet author="pyc" id="sqlFile-commentaire-10">
-        <sqlFile dbms="postgresql"
-                 encoding="utf8"
-                 endDelimiter="\nGO"
-                 path="commentaire-10.sql"
-                 relativeToChangelogFile="true"
-                 splitStatements="true"
-                 stripComments="true"/>
-    </changeSet>-->
 </databaseChangeLog>
 

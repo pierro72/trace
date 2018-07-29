@@ -3,16 +3,12 @@ package com.ex.trace.domaine;
 import com.ex.trace.domaine.CompositePK.UtilisateurMessageCompositePK;
 import com.ex.trace.domaine.security.Utilisateur;
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 public class Recommandation {
 
-
-
     @EmbeddedId
     private UtilisateurMessageCompositePK idpk;
-
 
     @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn( name = "id_message", nullable = false, insertable = false, updatable = false)
@@ -40,6 +36,10 @@ public class Recommandation {
         this.utilisateur = utilisateur;
     }
 
+    @PrePersist
+    private void onCreate() {
+        this.idpk = new UtilisateurMessageCompositePK(utilisateur.getId(), message.getId() );
+    }
 
     public Message getMessage() {
         return message;
@@ -65,10 +65,8 @@ public class Recommandation {
         this.idpk = id;
     }
 
-    @PrePersist
-    private void onCreate() {
-        this.idpk = new UtilisateurMessageCompositePK(utilisateur.getId(), message.getId() );
-    }
+
+
 
 }
 

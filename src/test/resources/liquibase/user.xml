@@ -1,0 +1,49 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+
+    <changeSet author="pyc" id="sqlFile-demo-user">
+        <sql dbms="postgresql"
+                 endDelimiter="\nGO"
+                 splitStatements="true"
+                 stripComments="true">
+            INSERT INTO UTILISATEUR (ID, USERNAME, PASSWORD, EMAIL, ENABLED, LAST_PASSWORD_RESET_DATE) VALUES (1, 'admin', '$2a$08$lDnHPz7eUkSi6ao14Twuau08mzhWrL4kyZGGU5xfiGALO/Vxd5DOi', 'admin@admin.com', 'true', '2018-07-05');
+            INSERT INTO UTILISATEUR (ID, USERNAME, PASSWORD, EMAIL, ENABLED, LAST_PASSWORD_RESET_DATE) VALUES (2, 'user', '$2a$10$3NXYxZ8P5SmEsWnnbKagLOlhIBbzYLOeruWK/OvrNMqqpL3q8ZZCe', 'user@user.com', 'true', '2018-07-05');
+            INSERT INTO UTILISATEUR (ID, USERNAME, PASSWORD, EMAIL, ENABLED, LAST_PASSWORD_RESET_DATE) VALUES (3, 'super', '$2a$10$3NXYxZ8P5SmEsWnnbKagLOlhIBbzYLOeruWK/OvrNMqqpL3q8ZZCe', 'super@super.com', 'true', '2018-07-05');
+            INSERT INTO UTILISATEUR (ID, USERNAME, PASSWORD, EMAIL, ENABLED, LAST_PASSWORD_RESET_DATE) VALUES (4, 'client', '$2a$10$3NXYxZ8P5SmEsWnnbKagLOlhIBbzYLOeruWK/OvrNMqqpL3q8ZZCe', 'client@client.com', 'true', '2018-07-05');
+            INSERT INTO UTILISATEUR (ID, USERNAME, PASSWORD, EMAIL, ENABLED, LAST_PASSWORD_RESET_DATE) VALUES (5, 'user2', '$2a$10$3NXYxZ8P5SmEsWnnbKagLOlhIBbzYLOeruWK/OvrNMqqpL3q8ZZCe', 'user2@client.com', 'true', '2018-07-05');
+            INSERT INTO UTILISATEUR (ID, USERNAME, PASSWORD, EMAIL, ENABLED, LAST_PASSWORD_RESET_DATE) VALUES (6, 'user3', '$2a$10$3NXYxZ8P5SmEsWnnbKagLOlhIBbzYLOeruWK/OvrNMqqpL3q8ZZCe', 'user3@client.com', 'false', '2018-07-05');
+        </sql>
+    </changeSet>
+
+
+    <changeSet author="pyc" id="sqlFile-demo-authority">
+        <sql dbms="postgresql"
+                 endDelimiter="\nGO"
+                 splitStatements="true"
+                 stripComments="true">
+            INSERT INTO AUTHORITY (ID, authority_type) VALUES (1, 'ROLE_ADMIN');
+            INSERT INTO AUTHORITY (ID, authority_type) VALUES (2, 'ROLE_USER');
+            INSERT INTO AUTHORITY (ID, authority_type) VALUES (3, 'ROLE_SUPER');
+            INSERT INTO AUTHORITY (ID, authority_type) VALUES (4, 'ROLE_CLIENT');
+        </sql>
+    </changeSet>
+
+
+    <changeSet author="pyc" id="sqlFile-demo-user-authority">
+        <sql dbms="postgresql"
+                 endDelimiter="\nGO"
+                 splitStatements="true"
+                 stripComments="true">
+            INSERT INTO UTILISATEUR_AUTHORITY (UTILISATEUR_ID, AUTHORITY_ID) VALUES (1, 1);
+            INSERT INTO UTILISATEUR_AUTHORITY (UTILISATEUR_ID, AUTHORITY_ID) VALUES (2, 2);
+            INSERT INTO UTILISATEUR_AUTHORITY (UTILISATEUR_ID, AUTHORITY_ID) VALUES (3, 3);
+            INSERT INTO UTILISATEUR_AUTHORITY (UTILISATEUR_ID, AUTHORITY_ID) VALUES (4, 4);
+            INSERT INTO UTILISATEUR_AUTHORITY (UTILISATEUR_ID, AUTHORITY_ID) VALUES (5, 2);
+            INSERT INTO UTILISATEUR_AUTHORITY (UTILISATEUR_ID, AUTHORITY_ID) VALUES (6, 2);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

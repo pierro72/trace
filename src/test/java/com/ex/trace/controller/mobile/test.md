@@ -1,0 +1,21 @@
+# test
+- en Focntion du role
+- des coordonnée valide/non
+
+
+obtenirTout_Trace_AvecRoleAdmin
+obtenirTout_Trace_AvecRoleUser
+obtenirTout_Trace_SansToken
+otenir_Trace_AvecRoleAdmin
+otenir_Trace_AvecRoleUser
+otenir_Trace_SansToken
+
+
+obtenirTout_Commentaire_AvecRoleAdmin
+obtenirTout_Commentaire_AvecRoleUser
+obtenirTout_Commentaire_SansToken
+otenir_Commentaire_AvecRoleAdmin
+otenir_Commentaire_AvecRoleUser
+otenir_Commentaire_SansToken
+
+

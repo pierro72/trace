@@ -1,4 +1,4 @@
-package com.ex.trace.service.dto.mobile;
+package com.ex.trace.service.dto.mobile.post;
 
 
 import com.ex.trace.validator.PasswordMatches;

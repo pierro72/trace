@@ -1,9 +1,13 @@
-package com.ex.trace.service.dto.mobile;
+package com.ex.trace.service.dto.mobile.post;
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
-public class PostTraceDTO extends PostMessageDTO {
+public class PostTraceDTO  {
 
+    @Size(min = 2, max = 1024) @Column(length = 1024)  @NotNull
+    protected String      contenu;
 
     @NotNull
     private double      positionX;
@@ -14,6 +18,22 @@ public class PostTraceDTO extends PostMessageDTO {
     @NotNull
     private String      codePays;
 
+    public PostTraceDTO(){}
+
+    public PostTraceDTO (String contenu, double positionX, double positionY, String codePays) {
+        this.contenu = contenu;
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.codePays = codePays;
+    }
+
+    public String getContenu() {
+        return contenu;
+    }
+
+    public void setContenu(String contenu) {
+        this.contenu = contenu;
+    }
 
     public double getPositionX() {
         return positionX;

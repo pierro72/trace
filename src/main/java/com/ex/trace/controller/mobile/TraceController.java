@@ -1,9 +1,9 @@
-package com.ex.trace.controller;
+package com.ex.trace.controller.mobile;
 
 import com.ex.trace.domaine.Trace;
 import com.ex.trace.service.TraceService;
-import com.ex.trace.service.VisiteService;
 import com.ex.trace.service.dto.mobile.*;
+import com.ex.trace.service.dto.mobile.post.PostTraceDTO;
 import com.ex.trace.service.mapper.mobile.TraceMobileMapper;
 import com.ex.trace.util.HeaderUtil;
 import io.swagger.annotations.Api;
@@ -24,16 +24,19 @@ import java.util.List;
  * REST controller for managing Trace.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/mobile")
 @Api( description = "Operations reservée aux utilisateurs pour voir/ajouter des traces")
-public class TraceController extends MessageController{
+public class TraceController extends MessageController {
 
     private final Logger log = LoggerFactory.getLogger(TraceController.class);
     private static final String ENTITY_NAME = "trace";
-    @Autowired private  TraceService traceService;
-    @Autowired private TraceMobileMapper mapper;
+    private  TraceService traceService;
+    private TraceMobileMapper mapper;
 
-    public TraceController() { }
+    public TraceController(TraceService traceService, TraceMobileMapper mapper) {
+        this.traceService   = traceService;
+        this.mapper         = mapper;
+    }
 
     /**
      * POST  /trace : Creer un nouveau trace
@@ -47,6 +50,7 @@ public class TraceController extends MessageController{
     public ResponseEntity<TraceDTO> ajouter (@Valid @RequestBody PostTraceDTO postTraceDTO) throws URISyntaxException {
         log.debug("requete REST pour sauvegarder Trace : {}", postTraceDTO);
         Trace trace = traceService.ajouter( mapper.toTrace(postTraceDTO) );
+        traceService.ajouterVisite( trace);
         TraceDTO result = mapper.toTraceDTO(trace);
         return ResponseEntity.created(
                 new URI("/api/trace/" + result.getId()))
@@ -63,7 +67,7 @@ public class TraceController extends MessageController{
     @GetMapping("/trace")
     public ResponseEntity< List<TraceSoftDTO> > obtenirTout (@RequestParam double positionX , @RequestParam  double positionY ) {
         log.debug("requete REST pour obtenir une liste de Trace");
-        List<Trace> traces =  traceService.obtenirToutAvecRestrictionPosition( positionX, positionY);
+        List<Trace> traces =  traceService.obtenirToutAvecGPS( positionX, positionY);
         List<TraceSoftDTO> traceSoftDTO = mapper.toTraceSoftDTO( traces);
         return new ResponseEntity<>(traceSoftDTO, HttpStatus.OK);
     }
@@ -78,7 +82,7 @@ public class TraceController extends MessageController{
     @GetMapping("/trace/{id}")
     public ResponseEntity<TraceDTO> obtenir(@PathVariable Long id, @RequestParam double positionX, @RequestParam double positionY ) {
         log.debug("requete REST to get Trace : {}", id);
-        Trace trace         = traceService.obtenirAvecRestrictionPosition( id, positionX, positionY);
+        Trace trace         = traceService.obtenirAvecGPS( id, positionX, positionY);
         TraceDTO traceDTO   =  mapper.toTraceDTO(trace);
         traceService.ajouterVisite(trace);
         return new ResponseEntity<>(traceDTO, HttpStatus.OK);
@@ -87,34 +91,36 @@ public class TraceController extends MessageController{
     @Override
     @PostMapping( "/trace/{id}/signalement" )
     public ResponseEntity<Void> ajouterSignalement(@PathVariable Long id, @RequestParam double positionX, @RequestParam double positionY) {
-        Trace trace = traceService.obtenirAvecRestrictionPosition( id, positionX, positionY);
+        Trace trace = traceService.obtenirAvecGPS( id, positionX, positionY);
         traceService.ajouterSignalement( trace);
-        return ResponseEntity.ok().headers(HeaderUtil.ajouterAlert(ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.ok().build();
     }
 
     @Override
     @DeleteMapping( "/trace/{id}/signalement" )
     public ResponseEntity<Void> supprimerSignalement(@PathVariable Long id, @RequestParam double positionX, @RequestParam double positionY) {
-        Trace trace = traceService.obtenirAvecRestrictionPosition( id, positionX, positionY);
+        Trace trace = traceService.obtenirAvecGPS( id, positionX, positionY);
         traceService.supprimerSignalement( trace);
-        return ResponseEntity.ok().headers(HeaderUtil.supprimerAlert(ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.ok().build();
     }
 
     @Override
     @PostMapping( "/trace/{id}/recommandation" )
     public ResponseEntity<Void> ajouterRecommandation(@PathVariable Long id, @RequestParam double positionX, @RequestParam double positionY) {
-        Trace trace = traceService.obtenirAvecRestrictionPosition( id, positionX, positionY);
+        Trace trace = traceService.obtenirAvecGPS( id, positionX, positionY);
         traceService.ajouterRecommandation( trace);
-        return ResponseEntity.ok().headers(HeaderUtil.ajouterAlert(ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.ok().build();
     }
 
     @Override
     @DeleteMapping( "/trace/{id}/recommandation" )
     public ResponseEntity<Void> supprimerRecommandation(@PathVariable Long id, @RequestParam double positionX, @RequestParam double positionY) {
-        Trace trace = traceService.obtenirAvecRestrictionPosition( id, positionX, positionY);
+        Trace trace = traceService.obtenirAvecGPS( id, positionX, positionY);
         traceService.supprimerRecommandation( trace);
-        return ResponseEntity.ok().headers(HeaderUtil.supprimerAlert(ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.ok().build();
     }
+
+
 
 
 }

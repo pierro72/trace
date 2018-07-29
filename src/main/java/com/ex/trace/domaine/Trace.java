@@ -1,8 +1,11 @@
 package com.ex.trace.domaine;
 import com.ex.trace.TraceType;
 import com.ex.trace.domaine.security.Utilisateur;
+import com.ex.trace.security.JwtUtilisateur;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -25,8 +28,11 @@ public class Trace  extends Message{
     @NotNull
     private TraceType   traceType;
 
-    @NotNull
-    private int         totalVue;
+    @Transient
+    private int         totalVisite;
+
+    @Transient
+    private boolean     vue;
 
     //RELATION
     @OneToMany(mappedBy = "trace")
@@ -35,11 +41,14 @@ public class Trace  extends Message{
     @OneToMany(mappedBy = "trace", cascade={ CascadeType.MERGE, CascadeType.PERSIST })
     private Set<Visite>         visites = new HashSet<>();
 
-    @PrePersist
-    private void onCreate() {
-        totalVue    = 0;
+    @PostLoad
+    private void postLoadTrace() {
+        JwtUtilisateur utilisateur = (JwtUtilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        this.totalVisite = this.getVisites().size();
+        this.vue         = this.estVue( utilisateur );
     }
 
+    //CONSTRUCTEUR
     public Trace( String contenu, Utilisateur autheur, double positionX, double positionY, String codePays, TraceType traceType ) {
         super ( contenu, autheur);
         this.positionX = positionX;
@@ -50,6 +59,7 @@ public class Trace  extends Message{
 
     public Trace() { }
 
+    //METHODE
     public void ajouterVisite (Visite v){
         if (visites == null){
             visites = new HashSet<>();
@@ -57,12 +67,15 @@ public class Trace  extends Message{
         visites.add(v);
     }
 
-    public int getTotalVue() {
-        return totalVue;
-    }
-
-    public void setTotalVue(int totalVue) {
-        this.totalVue = totalVue;
+    private boolean estVue (  JwtUtilisateur utilisateur){
+        boolean estVue = false;
+        for ( Visite v : this.getVisites()) {
+            if ( v.getUtilisateur().getId().longValue() == utilisateur.getId().longValue() ){
+                estVue = true;
+                break;
+            }
+        }
+        return estVue;
     }
 
     public Long getId() {
@@ -119,5 +132,21 @@ public class Trace  extends Message{
 
     public void setVisites(Set<Visite> visites) {
         this.visites = visites;
+    }
+
+    public int getTotalVisite() {
+        return totalVisite;
+    }
+
+    public void setTotalVisite(int totalVisite) {
+        this.totalVisite = totalVisite;
+    }
+
+    public boolean isVue() {
+        return vue;
+    }
+
+    public void setVue(boolean vue) {
+        this.vue = vue;
     }
 }

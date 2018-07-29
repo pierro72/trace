@@ -24,7 +24,7 @@ public interface TraceRepository extends JpaRepository<Trace, Long>, JpaSpecific
 
 
     @Query(TRACE_VISIBE)
-    List<Trace> obtenirToutAvecRestrictionPosition (@Param("longitudeMax") double longitudeMax,
+    List<Trace> obtenirToutAvecGPS (@Param("longitudeMax") double longitudeMax,
                                                    @Param("longitudeMin") double longitudeMin,
                                                    @Param("latitudeMax") double latitudeMax,
                                                    @Param("latitudeMin") double latitudeMin);

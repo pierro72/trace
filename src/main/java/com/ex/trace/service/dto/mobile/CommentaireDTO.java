@@ -1,6 +1,5 @@
 package com.ex.trace.service.dto.mobile;
 
-import com.ex.trace.TraceType;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;

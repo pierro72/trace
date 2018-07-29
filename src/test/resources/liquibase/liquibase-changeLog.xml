@@ -3,9 +3,9 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <include file="liquibase/data/user.xml"/>
-    <include file="liquibase/data/message.xml"/>
-    <include file="liquibase/data/trace.xml"/>
+    <include file="liquibase/app.xml"/>
+    <include file="liquibase/user.xml"/>
+    <include file="liquibase/message.xml"/>
 
 
 

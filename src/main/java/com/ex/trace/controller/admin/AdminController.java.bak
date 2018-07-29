@@ -1,6 +1,6 @@
 package com.ex.trace.controller.admin;
 
-import com.ex.trace.controller.CommentaireController;
+import com.ex.trace.controller.mobile.CommentaireController;
 import com.ex.trace.domaine.Commentaire;
 import com.ex.trace.domaine.Trace;
 import com.ex.trace.service.CommentaireService;
@@ -35,13 +35,9 @@ import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
 public class AdminController {
 
     private final Logger log = LoggerFactory.getLogger(CommentaireController.class);
-
     private final TraceService traceService;
-
     private final TraceAdminMapper traceMapper;
-
     private final CommentaireService commentaireService;
-
     private final CommentaireAdminMapper commentaireMapper;
 
 

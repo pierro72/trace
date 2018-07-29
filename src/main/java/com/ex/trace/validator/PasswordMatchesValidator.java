@@ -1,6 +1,6 @@
 package com.ex.trace.validator;
 
-import com.ex.trace.service.dto.mobile.UtilisateurInscriptionDTO;
+import com.ex.trace.service.dto.mobile.post.UtilisateurInscriptionDTO;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

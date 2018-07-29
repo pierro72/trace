@@ -30,7 +30,6 @@ public class TraceDTO extends MessageDTO {
     }
 
 
-
     public TraceType getTraceType() {
         return traceType;
     }

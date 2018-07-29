@@ -8,37 +8,39 @@ import javax.persistence.*;
 public class Signalement {
 
     @EmbeddedId
-    private UtilisateurMessageCompositePK id;
-
+    private UtilisateurMessageCompositePK idpk;
 
     @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn( name = "id_message", nullable = false, insertable = false, updatable = false)
-    private Message       message;
+    private Message message;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn( name = "id_utilisateur", nullable = false, insertable = false, updatable = false)
     private Utilisateur utilisateur;
 
 
+    public Signalement() {
+    }
 
-    public Signalement (){}
-
-    public Signalement ( Message message, Utilisateur utilisateur){
+    public Signalement(Message message, Utilisateur utilisateur) {
         this.message = message;
         this.utilisateur = utilisateur;
     }
 
-    public Signalement ( Trace trace, Utilisateur utilisateur){
+    public Signalement(Trace trace, Utilisateur utilisateur) {
         this.message = trace;
         this.utilisateur = utilisateur;
     }
 
-    public Signalement ( Commentaire commentaire, Utilisateur utilisateur){
+    public Signalement(Commentaire commentaire, Utilisateur utilisateur) {
         this.message = commentaire;
         this.utilisateur = utilisateur;
     }
 
-
+    @PrePersist
+    private void onCreate() {
+        this.idpk = new UtilisateurMessageCompositePK(utilisateur.getId(), message.getId() );
+    }
 
     public Message getMessage() {
         return message;
@@ -57,10 +59,13 @@ public class Signalement {
     }
 
     public UtilisateurMessageCompositePK getId() {
-        return id;
+        return idpk;
     }
 
     public void setId(UtilisateurMessageCompositePK id) {
-        this.id = id;
+        this.idpk = id;
     }
+
+
+
 }

@@ -1,13 +1,12 @@
 package com.ex.trace.exception;
 
 import com.ex.trace.ApiError;
-import com.ex.trace.exception.ResourceNotFoundException;
-import com.ex.trace.exception.TraceNotProxiException;
 import javassist.NotFoundException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -22,6 +21,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
@@ -42,6 +43,10 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
         return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
     }
+
+
+
+
 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter( MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -84,6 +89,13 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    @ExceptionHandler({ AccessDeniedException.class })
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        String error = "« Accès refusé";
+        ApiError apiError =  new ApiError(HttpStatus.UNAUTHORIZED, ex.getLocalizedMessage(), error);
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
 
     @ExceptionHandler({ ConstraintViolationException.class })
     public ResponseEntity<Object> handleConstraintViolation( ConstraintViolationException ex, WebRequest request) {
@@ -110,8 +122,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler({ TraceNotProxiException.class })
-    public ResponseEntity<Object> handleException( TraceNotProxiException ex) {
+    @ExceptionHandler({ MessageNotProxiException.class })
+    public ResponseEntity<Object> handleException( MessageNotProxiException ex) {
         String error = ex.getMessage();
         ApiError apiError =  new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), error);
         return new ResponseEntity<Object> (apiError, new HttpHeaders(), apiError.getStatus());

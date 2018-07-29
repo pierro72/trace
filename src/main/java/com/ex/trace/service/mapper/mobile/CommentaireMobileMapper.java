@@ -1,12 +1,11 @@
 package com.ex.trace.service.mapper.mobile;
 
 import com.ex.trace.domaine.Commentaire;
-import com.ex.trace.domaine.security.Utilisateur;
 import com.ex.trace.repository.TraceRepository;
 import com.ex.trace.security.repository.UtilisateurRepository;
 import com.ex.trace.service.TraceService;
 import com.ex.trace.service.dto.mobile.CommentaireDTO;
-import com.ex.trace.service.dto.mobile.PostCommentaireDTO;
+import com.ex.trace.service.dto.mobile.post.PostCommentaireDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public abstract class CommentaireMobileMapper {
     public abstract List<CommentaireDTO> toDto (List<Commentaire> commentaires);
 
 
-    public Commentaire toEntity (PostCommentaireDTO dto) {
+    public Commentaire toEntity ( PostCommentaireDTO dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return new Commentaire (
             dto.getContenu(),
@@ -36,19 +35,17 @@ public abstract class CommentaireMobileMapper {
         );
     }
 
-    public CommentaireDTO toDto (Commentaire entity) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Utilisateur utilisateur = utilisateurRepository.findByUsername( authentication.getName());
+    public CommentaireDTO toDto ( Commentaire entity) {
 
         return new CommentaireDTO (
             entity.getId(),
             entity.getContenu(),
             entity.getDate(),
-            entity.getTotalLike(),
             entity.getTotalSignalement(),
-            MapperUtil.estLike( entity, utilisateur),
-            MapperUtil.estSignale( entity, utilisateur),
-            MapperUtil.estProprietaire( entity, utilisateur),
+            entity.getTotalSignalement(),
+            entity.isRecommande(),
+            entity.isSignale(),
+            entity.isProprietaire(),
             entity.getTrace().getId()
         );
     }
