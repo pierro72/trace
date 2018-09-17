@@ -61,6 +61,8 @@ public class SwaggerConfig {
         return new ApiKey("token", "token", "header");
     }
 
+
+
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Spring REST Sample with Swagger")

@@ -61,7 +61,6 @@ public class AdminCommentaireController extends AdminMessageController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/commentaire/{id}")
     @ApiOperation( value = "Obtenir une commentaire à partir de son ID")
-
     public ResponseEntity<CommentaireDTO> obtenir(@PathVariable Long id) {
         log.debug("requete REST pour obtenir Commentaire : {}", id);
         Commentaire commentaire = commentaireService.obtenir(id);

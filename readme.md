@@ -24,3 +24,5 @@ http://localhost:8080/swagger-ui.htm
 ## Deploiement
 
 `sudo apt-get install openjdk-8-jdk maven tomcat8 postgresql`
+
+CREATE DATABASE tracetest OWNER admin;

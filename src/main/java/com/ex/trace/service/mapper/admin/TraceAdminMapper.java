@@ -4,6 +4,7 @@ import com.ex.trace.domaine.Trace;
 import com.ex.trace.service.dto.admin.TraceDTO;
 import com.ex.trace.util.EntityMapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 /**
@@ -12,6 +13,7 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,  uses = { CommentaireAdminMapper.class} )
 public interface TraceAdminMapper extends EntityMapper<TraceDTO, Trace> {
 
+    @Mapping( source="autheur.id", target="autheurId")
     TraceDTO    toDto(Trace trace);
 
 }

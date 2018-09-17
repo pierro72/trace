@@ -19,14 +19,6 @@ public class Commentaire extends Message {
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(nullable = false)
     private Trace trace;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Trace getTrace() {
         return trace;
     }
